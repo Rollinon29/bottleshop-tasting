@@ -1,0 +1,3057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tasting Notes — Jannali Bottle Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  /* ── CONFIG ──────────────────────────────────────────────── */
+  :root {
+    --bg:        #111a12;
+    --surface:   #182019;
+    --border:    #2a3d2c;
+    --muted:     #3d5440;
+    --text:      #e4ede5;
+    --text-dim:  #7a9b7d;
+    --accent:    #6faf77;
+    --accent-dk: #5e8363;
+    --accent-lt: #acc8a8;
+    --dark:      #243726;
+    --danger:    #c86e6e;
+    --radius:    6px;
+    --sans:      'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── LAYOUT ──────────────────────────────────────────────── */
+  #app { max-width: 680px; margin: 0 auto; padding: 24px 16px 80px; }
+
+  .header {
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px; margin-bottom: 24px;
+  }
+  .header h1 { font-family: var(--sans); font-size: 16px; font-weight: 600; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; }
+  .header span { font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* ── SCREEN SYSTEM ───────────────────────────────────────── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── CARDS & PANELS ──────────────────────────────────────── */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .panel-title {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 16px;
+  }
+
+  /* ── FORM ELEMENTS ───────────────────────────────────────── */
+  label { font-size: 12px; color: var(--text-dim); display: block; margin-bottom: 6px; letter-spacing: 0.03em; }
+
+  input[type=text], input[type=password], input[type=number], textarea, select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  select option { background: var(--bg); }
+  textarea { resize: vertical; min-height: 80px; }
+
+  .field { margin-bottom: 14px; }
+
+  /* ── BUTTONS ─────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 20px; border-radius: var(--radius);
+    font-family: var(--sans); font-size: 13px; letter-spacing: 0.04em;
+    cursor: pointer; border: none; transition: all 0.15s; font-weight: 500;
+  }
+  .btn-primary { background: var(--accent); color: #0e0e0d; }
+  .btn-primary:hover { background: #d4b87a; }
+  .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+  .btn-full { width: 100%; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+  /* ── SEARCH RESULTS ──────────────────────────────────────── */
+  #search-results { margin-top: 8px; }
+  .result-item {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .result-item:hover { border-color: var(--accent); background: rgba(200,169,110,0.05); }
+  .result-name { font-size: 15px; color: var(--text); }
+  .result-meta { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  /* ── MODE TABS ───────────────────────────────────────────── */
+  .mode-tabs { display: flex; gap: 0; margin-bottom: 20px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .mode-tab {
+    flex: 1; padding: 10px 6px; text-align: center;
+    font-family: var(--sans); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; background: var(--bg); color: var(--text-dim);
+    border: none; transition: all 0.15s;
+  }
+  .mode-tab.active { background: var(--accent); color: #0e0e0d; font-weight: 500; }
+
+  /* ── STAR RATING ─────────────────────────────────────────── */
+  .star-group { display: flex; gap: 6px; align-items: center; }
+  .star {
+    font-size: 20px; cursor: pointer; color: var(--muted);
+    transition: color 0.1s; user-select: none;
+  }
+  .star.active { color: var(--accent); }
+  .star-label { font-size: 11px; color: var(--text-dim); margin-left: 8px; }
+
+  .rating-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* ── SLIDERS ─────────────────────────────────────────────── */
+  .slider-item { margin-bottom: 18px; }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); margin-bottom: 6px; }
+  input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px;
+    background: var(--border); border-radius: 2px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); cursor: pointer;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .slider-value { text-align: center; font-size: 11px; color: var(--accent); margin-top: 4px; }
+
+  /* ── CHECKBOXES / TAG GRID ───────────────────────────────── */
+  .tag-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--border); font-size: 11px;
+    cursor: pointer; transition: all 0.12s; color: var(--text-dim);
+    user-select: none;
+  }
+  .tag.selected { border-color: var(--accent); color: var(--accent); background: rgba(111,175,119,0.12); }
+
+  /* ── COLOUR SLIDER ───────────────────────────────────────── */
+  .colour-track {
+    height: 24px; border-radius: 12px; margin: 8px 0;
+    border: 1px solid var(--border); position: relative; overflow: visible;
+  }
+  .colour-indicator {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid white; box-shadow: 0 0 0 1px rgba(0,0,0,0.4);
+    transition: left 0.1s; pointer-events: none;
+  }
+
+  /* ── SECTION DIVIDER ─────────────────────────────────────── */
+  .section-label {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-lt); margin: 20px 0 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── PRODUCT BADGE ───────────────────────────────────────── */
+  .product-badge {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .product-badge-name { font-size: 15px; color: var(--text); font-family: var(--sans); font-weight: 600; }
+  .product-badge-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .product-badge-cat {
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 3px; border: 1px solid var(--accent-dk); color: var(--accent-lt);
+  }
+
+  /* ── NOTES LIST ──────────────────────────────────────────── */
+  .note-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+    margin-bottom: 10px;
+  }
+  .note-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .note-card-title { font-size: 15px; color: var(--text); font-family: var(--sans); font-weight: 600; }
+  .note-card-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .note-card-score { font-size: 22px; color: var(--accent); font-weight: 300; }
+  .note-card-body { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  .note-tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .note-tag-sm { font-size: 11px; padding: 2px 7px; border-radius: 3px; background: rgba(111,175,119,0.1); color: var(--accent-lt); }
+
+  /* ── LOGIN ───────────────────────────────────────────────── */
+  .login-wrap { max-width: 320px; margin: 60px auto; }
+  .pin-dots { display: flex; gap: 10px; justify-content: center; margin: 16px 0; }
+  .pin-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--border); transition: background 0.1s; }
+  .pin-dot.filled { background: var(--accent); border-color: var(--accent); }
+  .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+  .num-btn {
+    padding: 16px; text-align: center; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    font-family: var(--sans); font-size: 16px; cursor: pointer;
+    transition: all 0.12s; color: var(--text);
+  }
+  .num-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── CONFIG SCREEN ───────────────────────────────────────── */
+  .config-note { font-size: 11px; color: var(--text-dim); margin-top: 6px; line-height: 1.5; }
+
+  /* ── NAV BAR ─────────────────────────────────────────────── */
+  .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; }
+  .nav-btn {
+    flex: 1; padding: 12px 8px; text-align: center;
+    font-family: var(--sans); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; background: none; border: none; color: var(--text-dim);
+    transition: color 0.12s;
+  }
+  .nav-btn.active { color: var(--accent); }
+  .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+
+  /* ── TOAST ───────────────────────────────────────────────── */
+  #toast {
+    position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--accent); color: #0e0e0d; padding: 10px 20px;
+    border-radius: 20px; font-size: 12px; font-weight: 500;
+    opacity: 0; transition: all 0.25s; pointer-events: none; white-space: nowrap;
+    z-index: 100;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── LOADING ─────────────────────────────────────────────── */
+  .loading { text-align: center; padding: 30px; color: var(--text-dim); font-size: 12px; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── EMPTY STATE ─────────────────────────────────────────── */
+  .empty { text-align: center; padding: 40px 20px; color: var(--text-dim); }
+  .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+
+  /* ── UTILITIES ───────────────────────────────────────────── */
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .text-dim { color: var(--text-dim); }
+  .text-accent { color: var(--accent); }
+  .text-sm { font-size: 11px; }
+  .hidden { display: none !important; }
+  .error-msg { color: var(--danger); font-size: 11px; margin-top: 6px; }
+
+  /* ── FLAVOUR WHEEL ───────────────────────────────────────── */
+  .wheel-section { margin-bottom: 16px; }
+  .wheel-section-title { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.06em; }
+
+  /* ── STYLE PICKER MODAL ──────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: flex; align-items: flex-end; justify-content: center;
+    z-index: 200; padding: 16px;
+  }
+  .modal-overlay.hidden { display: none; }
+  .modal-sheet {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; width: 100%; max-width: 640px;
+    max-height: 80vh; overflow-y: auto;
+  }
+  .modal-title {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 8px;
+  }
+  .modal-product-name {
+    font-family: var(--sans); font-weight: 600; font-size: 17px;
+    color: var(--text); margin-bottom: 16px;
+  }
+  .style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .style-btn {
+    padding: 12px 10px; border-radius: var(--radius);
+    border: 1px solid var(--border); background: var(--bg);
+    font-family: var(--sans); font-size: 12px; color: var(--text-dim);
+    cursor: pointer; text-align: left; transition: all 0.12s; line-height: 1.4;
+  }
+  .style-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .style-btn strong { display: block; color: var(--text); font-size: 14px; margin-bottom: 2px; font-weight: 600; }
+  .style-btn.selected { border-color: var(--accent); background: rgba(200,169,110,0.1); color: var(--accent); }
+
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── CONFIG SCREEN ──────────────────────────────────── -->
+  <div id="screen-config" class="screen active">
+    <div class="header">
+      <h1>Setup</h1>
+      <span>Tasting Notes</span>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Square Credentials</div>
+      <div class="field">
+        <label>Production Access Token</label>
+        <input type="password" id="cfg-square-token" placeholder="sq0atp-..." autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Location ID</label>
+        <input type="text" id="cfg-square-location" placeholder="LXXXXXXXXXXXXXXXXX">
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Supabase Credentials</div>
+      <div class="field">
+        <label>Project URL</label>
+        <input type="text" id="cfg-sb-url" placeholder="https://xxxx.supabase.co">
+      </div>
+      <div class="field">
+        <label>Anon / Public Key</label>
+        <input type="password" id="cfg-sb-key" placeholder="eyJ...">
+      </div>
+    </div>
+    <p class="config-note">These are stored locally on this device only. Never shared or sent anywhere other than Square and Supabase directly.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" onclick="saveConfig()">Save & Continue</button>
+    </div>
+    <div id="config-error" class="error-msg hidden"></div>
+  </div>
+
+  <!-- ── LOGIN SCREEN ───────────────────────────────────── -->
+  <div id="screen-login" class="screen">
+    <div class="header">
+      <h1>Tasting Notes</h1>
+    </div>
+    <div class="login-wrap">
+      <div class="panel">
+        <div class="panel-title" style="text-align:center">Who's tasting?</div>
+        <div class="field">
+          <label>Name</label>
+          <select id="staff-select">
+            <option value="">Loading staff...</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>PIN</label>
+          <div class="pin-dots" id="pin-dots">
+            <div class="pin-dot" id="dot-0"></div>
+            <div class="pin-dot" id="dot-1"></div>
+            <div class="pin-dot" id="dot-2"></div>
+            <div class="pin-dot" id="dot-3"></div>
+          </div>
+        </div>
+        <div class="numpad" id="numpad"></div>
+        <div id="login-error" class="error-msg hidden mt-8" style="text-align:center"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN: SEARCH / ADD ─────────────────────────────── -->
+  <div id="screen-main" class="screen">
+    <div class="header">
+      <h1>Tasting Notes</h1>
+      <span id="logged-in-name"></span>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Find or add a product</div>
+      <div class="field">
+        <input type="text" id="product-search" placeholder="Search your Square inventory..." oninput="searchProducts(this.value)">
+      </div>
+      <div id="search-results"></div>
+      <div id="search-loading" class="hidden loading"><span class="spinner"></span>Searching...</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Or add something new</div>
+      <div class="field">
+        <label>Product Name</label>
+        <input type="text" id="new-product-name" placeholder="e.g. Balter XPA">
+      </div>
+      <div class="field">
+        <label>Producer</label>
+        <input type="text" id="new-producer" placeholder="e.g. Balter Brewing">
+      </div>
+      <div class="field">
+        <label>Drink Type</label>
+        <select id="new-category" onchange="updateSubcategoryOptions()">
+          <option value="">Select type...</option>
+          <option value="beer">Beer</option>
+          <option value="wine">Wine</option>
+          <option value="whisky">Whisky</option>
+          <option value="gin">Gin</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="field" id="subcategory-field" style="display:none">
+        <label>Style / Category</label>
+        <select id="new-subcategory"></select>
+      </div>
+      <div class="field">
+        <label>ABV %</label>
+        <input type="number" id="new-abv" placeholder="e.g. 5.2" min="0" max="100" step="0.1">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="startNewProduct()">Start Tasting</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TASTING SCREEN ─────────────────────────────────── -->
+  <div id="screen-tasting" class="screen">
+    <div class="header">
+      <h1>Tasting</h1>
+      <span id="tasting-back" style="cursor:pointer;color:var(--accent)" onclick="goBack()">← back</span>
+    </div>
+
+    <div id="tasting-product-badge"></div>
+
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="setMode('quick')" id="tab-quick">Quick</button>
+      <button class="mode-tab" onclick="setMode('guided')" id="tab-guided">Guided</button>
+      <button class="mode-tab" onclick="setMode('advanced')" id="tab-advanced">Advanced</button>
+    </div>
+
+    <!-- QUICK MODE -->
+    <div id="mode-quick">
+      <div class="panel">
+        <div class="panel-title">Quick Rating</div>
+        <div class="rating-grid">
+          <div class="field">
+            <label>Overall</label>
+            <div class="star-group" id="stars-overall"></div>
+          </div>
+          <div class="field">
+            <label>Taste</label>
+            <div class="star-group" id="stars-taste"></div>
+          </div>
+          <div class="field">
+            <label>Aroma</label>
+            <div class="star-group" id="stars-smell"></div>
+          </div>
+          <div class="field">
+            <label>Appearance</label>
+            <div class="star-group" id="stars-appearance"></div>
+          </div>
+        </div>
+        <div class="field mt-16">
+          <label>Notes</label>
+          <textarea id="quick-notes" placeholder="Anything worth remembering..."></textarea>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="quick-recommend" style="width:auto;accent-color:var(--accent)">
+            Would recommend
+          </label>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="quick-staffpick" style="width:auto;accent-color:var(--accent)">
+            Staff pick
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIDED MODE -->
+    <div id="mode-guided" class="hidden">
+      <div class="panel">
+        <div class="panel-title">Guided — Sensory Sliders</div>
+        <div id="guided-sliders"></div>
+        <div class="section-label">Ratings</div>
+        <div id="guided-ratings"></div>
+        <div class="field mt-16">
+          <label>Notes</label>
+          <textarea id="guided-notes" placeholder="Guided impressions..."></textarea>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="guided-recommend" style="width:auto;accent-color:var(--accent)">
+            Would recommend
+          </label>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="guided-staffpick" style="width:auto;accent-color:var(--accent)">
+            Staff pick
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADVANCED MODE -->
+    <div id="mode-advanced" class="hidden">
+      <div class="panel">
+        <div class="panel-title">Appearance</div>
+        <div id="advanced-appearance"></div>
+        <div class="field">
+          <label>Colour</label>
+          <div id="colour-track-wrap"></div>
+        </div>
+        <div class="field">
+          <label>Clarity / Notes</label>
+          <textarea id="adv-appearance-notes" placeholder="e.g. hazy, bright, deep ruby..." style="min-height:50px"></textarea>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Nose / Aroma</div>
+        <div id="advanced-nose"></div>
+        <div class="field mt-8">
+          <label>Open nose notes</label>
+          <textarea id="adv-nose-notes" placeholder="What do you get?" style="min-height:50px"></textarea>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Palate</div>
+        <div id="advanced-palate"></div>
+        <div class="field mt-8">
+          <label>Open palate notes</label>
+          <textarea id="adv-palate-notes" placeholder="Flavour, texture, balance..." style="min-height:50px"></textarea>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Finish</div>
+        <div id="advanced-finish"></div>
+        <div class="field mt-8">
+          <label>Finish notes</label>
+          <textarea id="adv-finish-notes" placeholder="Length, aftertaste..." style="min-height:50px"></textarea>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Overall</div>
+        <div class="field">
+          <label>Overall Impression</label>
+          <div class="star-group" id="stars-adv-overall"></div>
+        </div>
+        <div class="field mt-8">
+          <label>Conclusion / Assessment</label>
+          <textarea id="adv-conclusion" placeholder="Final thoughts, food pairings, who it's for..."></textarea>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="adv-recommend" style="width:auto;accent-color:var(--accent)">
+            Would recommend
+          </label>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="adv-staffpick" style="width:auto;accent-color:var(--accent)">
+            Staff pick
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" id="save-btn" onclick="saveTastingNote()">Save Note</button>
+    </div>
+    <div id="save-error" class="error-msg hidden mt-8"></div>
+  </div>
+
+  <!-- ── NOTES SCREEN ───────────────────────────────────── -->
+  <div id="screen-notes" class="screen">
+    <div class="header">
+      <h1>Notes</h1>
+      <span id="notes-count" class="text-dim text-sm"></span>
+    </div>
+    <div class="panel" style="padding:12px 16px">
+      <div style="display:flex;gap:8px">
+        <input type="text" id="notes-search" placeholder="Search notes..." oninput="filterNotes()" style="flex:1">
+        <select id="notes-filter-cat" onchange="filterNotes()" style="width:120px">
+          <option value="">All types</option>
+          <option value="beer">Beer</option>
+          <option value="wine">Wine</option>
+          <option value="whisky">Whisky</option>
+          <option value="gin">Gin</option>
+        </select>
+      </div>
+    </div>
+    <div id="notes-list"></div>
+  </div>
+
+
+  <!-- ── STYLE PICKER MODAL ────────────────────────────── -->
+  <div class="modal-overlay hidden" id="style-picker-modal">
+    <div class="modal-sheet">
+      <div class="modal-title">Select style</div>
+      <div class="modal-product-name" id="style-picker-product-name"></div>
+      <div id="style-picker-grid"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary btn-full" onclick="confirmStylePick()">Start Tasting</button>
+        <button class="btn btn-ghost btn-full" onclick="closeStylePicker()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- NAV BAR -->
+<nav class="nav" id="main-nav" style="display:none">
+  <button class="nav-btn active" id="nav-add" onclick="navTo('main')">
+    <span class="nav-icon">＋</span>Add Note
+  </button>
+  <button class="nav-btn" id="nav-notes" onclick="navTo('notes')">
+    <span class="nav-icon">◎</span>All Notes
+  </button>
+  <button class="nav-btn" id="nav-logout" onclick="logout()">
+    <span class="nav-icon">↩</span>Out
+  </button>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONFIG & STATE
+// ═══════════════════════════════════════════════════════
+let CONFIG = { squareToken: '', squareLocation: '', sbUrl: '', sbKey: '' };
+let STATE = { staffId: null, staffName: '', currentProduct: null, currentMode: 'quick', allNotes: [] };
+let pinBuffer = '';
+let searchTimer = null;
+let squareResultsCache = [];
+const STYLE_PICKER_OPTIONS = {
+  beer: [
+    { label: 'Clean + Easy',    value: 'Clean + Easy',    desc: 'Light, refreshing, grab and go' },
+    { label: 'Clean + Classic', value: 'Clean + Classic',  desc: 'Pilsners and crisp lagers' },
+    { label: 'Bright + Hoppy',  value: 'Bright + Hoppy',   desc: 'Easy pales with fresh hop' },
+    { label: 'Bitter + Bold',   value: 'Bitter + Bold',    desc: 'West Coast, hop-driven bitterness' },
+    { label: 'Juicy + Bold',    value: 'Juicy + Bold',     desc: 'Hazy IPAs, big hop flavour' },
+    { label: 'Dark + Deep',     value: 'Dark + Deep',      desc: 'Porters, stouts, malt-driven' },
+    { label: 'Wild + Tart',     value: 'Wild + Tart',      desc: 'Sours, saisons, anything lively' },
+    { label: 'Old + New',       value: 'Old + New',        desc: 'European classics and modern takes' },
+  ],
+  wine: [
+    { label: 'Pair + Pour',     value: 'Pair + Pour',      desc: 'Food-focused, pours with interest' },
+    { label: 'Fun + Fizzy',     value: 'Fun + Fizzy',      desc: 'Light, refreshing, grab and go' },
+    { label: 'Light Dry White', value: 'Light Dry White',  desc: 'Riesling, Pinot Gris, Vermentino' },
+    { label: 'Full White',      value: 'Full White',       desc: 'Chardonnay, Marsanne' },
+    { label: 'Rosé',            value: 'Rosé',             desc: '' },
+    { label: 'Light Red',       value: 'Light Red',        desc: 'Pinot Noir, Gamay' },
+    { label: 'Medium Red',      value: 'Medium Red',       desc: 'Tempranillo, Grenache' },
+    { label: 'Bold Red',        value: 'Bold Red',         desc: 'Shiraz, Cab Sauv, Monastrell' },
+  ],
+  whisky: [
+    { label: 'Single Malt',     value: 'Single Malt',      desc: '' },
+    { label: 'Blended',         value: 'Blended',          desc: '' },
+    { label: 'Bourbon Style',   value: 'Bourbon Style',    desc: '' },
+    { label: 'Rye Style',       value: 'Rye Style',        desc: '' },
+    { label: 'Other Whisky',    value: 'Other',            desc: '' },
+  ],
+  gin: [
+    { label: 'London Dry',      value: 'London Dry',       desc: 'Juniper-forward, classic' },
+    { label: 'Contemporary',    value: 'Contemporary',     desc: 'Floral, citrus, experimental' },
+    { label: 'Navy Strength',   value: 'Navy Strength',    desc: '57%+ ABV' },
+    { label: 'Sloe / Fruit',    value: 'Sloe',             desc: 'Infused or fruit-forward' },
+    { label: 'Other',           value: 'Other',            desc: '' },
+  ],
+  cider: [
+    { label: 'Dry Cider',       value: 'Dry Cider',        desc: '' },
+    { label: 'Sweet Cider',     value: 'Sweet Cider',      desc: '' },
+    { label: 'Wild / Pet Nat',  value: 'Wild Cider',       desc: '' },
+  ],
+  noalc: [
+    { label: 'No Alc Beer',     value: 'No Alc Beer',      desc: '' },
+    { label: 'No Alc Wine',     value: 'No Alc Wine',      desc: '' },
+    { label: 'No Alc Spirit',   value: 'No Alc Spirit',    desc: '' },
+  ],
+  other: [
+    { label: 'Beer',            value: 'beer',             desc: '' },
+    { label: 'Wine',            value: 'wine',             desc: '' },
+    { label: 'Whisky',          value: 'whisky',           desc: '' },
+    { label: 'Gin',             value: 'gin',              desc: '' },
+    { label: 'Cider',           value: 'cider',            desc: '' },
+    { label: 'Other',           value: 'other',            desc: '' },
+  ],
+};
+
+
+
+// Load config from localStorage
+function loadConfig() {
+  const c = localStorage.getItem('tnconfig');
+  if (c) { CONFIG = JSON.parse(c); return true; }
+  return false;
+}
+
+function saveConfig() {
+  const token = document.getElementById('cfg-square-token').value.trim();
+  const loc   = document.getElementById('cfg-square-location').value.trim();
+  const sbUrl = document.getElementById('cfg-sb-url').value.trim();
+  const sbKey = document.getElementById('cfg-sb-key').value.trim();
+  const err   = document.getElementById('config-error');
+
+  if (!token || !loc || !sbUrl || !sbKey) {
+    err.textContent = 'All four fields are required.';
+    err.classList.remove('hidden'); return;
+  }
+  CONFIG = { squareToken: token, squareLocation: loc, sbUrl, sbKey };
+  localStorage.setItem('tnconfig', JSON.stringify(CONFIG));
+  err.classList.add('hidden');
+  showScreen('login');
+  loadStaff();
+}
+
+// ═══════════════════════════════════════════════════════
+// SUPABASE HELPERS
+// ═══════════════════════════════════════════════════════
+async function sbFetch(path, opts = {}) {
+  const url = CONFIG.sbUrl + '/rest/v1/' + path;
+  const res = await fetch(url, {
+    ...opts,
+    headers: {
+      'apikey': CONFIG.sbKey,
+      'Authorization': 'Bearer ' + CONFIG.sbKey,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...(opts.headers || {})
+    }
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(txt);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+async function sbGet(table, params = '') {
+  return sbFetch(table + '?' + params, { method: 'GET' });
+}
+
+async function sbPost(table, body) {
+  return sbFetch(table, { method: 'POST', body: JSON.stringify(body) });
+}
+
+// ═══════════════════════════════════════════════════════
+// SQUARE HELPERS
+// ═══════════════════════════════════════════════════════
+async function squareSearch(query) {
+  const res = await fetch('https://whmmxbkgqxfqluskjguo.supabase.co/functions/v1/square-proxy', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': CONFIG.sbKey,
+      'Authorization': 'Bearer ' + CONFIG.sbKey,
+      'x-square-token': CONFIG.squareToken
+    },
+    body: JSON.stringify({ action: 'search', payload: { query } })
+  });
+  if (!res.ok) throw new Error('Square proxy error ' + res.status);
+  return res.json();
+}
+
+// ═══════════════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const showNav = ['main','notes','tasting'].includes(name);
+  document.getElementById('main-nav').style.display = showNav ? 'flex' : 'none';
+  if (name === 'main') { document.getElementById('nav-add').classList.add('active'); document.getElementById('nav-notes').classList.remove('active'); }
+  if (name === 'notes') { document.getElementById('nav-notes').classList.add('active'); document.getElementById('nav-add').classList.remove('active'); loadNotes(); }
+}
+
+function navTo(screen) { showScreen(screen); }
+function goBack() { showScreen('main'); }
+
+// ═══════════════════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════════════════
+async function loadStaff() {
+  try {
+    const staff = await sbGet('staff', 'select=id,name,role&order=name');
+    const sel = document.getElementById('staff-select');
+    sel.innerHTML = '<option value="">Select name...</option>';
+    staff.forEach(s => {
+      const o = document.createElement('option');
+      o.value = s.id; o.textContent = s.name;
+      sel.appendChild(o);
+    });
+  } catch(e) {
+    showToast('Could not load staff — check Supabase config', true);
+  }
+}
+
+function buildNumpad() {
+  const pad = document.getElementById('numpad');
+  pad.innerHTML = '';
+  const keys = ['1','2','3','4','5','6','7','8','9','','0','⌫'];
+  keys.forEach(k => {
+    const btn = document.createElement('div');
+    btn.className = 'num-btn';
+    btn.textContent = k;
+    if (k === '') { btn.style.visibility = 'hidden'; }
+    else btn.onclick = () => handlePin(k);
+    pad.appendChild(btn);
+  });
+}
+
+function handlePin(key) {
+  const err = document.getElementById('login-error');
+  err.classList.add('hidden');
+  if (key === '⌫') { pinBuffer = pinBuffer.slice(0, -1); }
+  else if (pinBuffer.length < 4) { pinBuffer += key; }
+  updatePinDots();
+  if (pinBuffer.length === 4) verifyPin();
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('dot-' + i).classList.toggle('filled', i < pinBuffer.length);
+  }
+}
+
+async function verifyPin() {
+  const staffId = document.getElementById('staff-select').value;
+  if (!staffId) { pinBuffer = ''; updatePinDots(); showLoginError('Select your name first.'); return; }
+  try {
+    const res = await sbGet('staff', `select=id,name,pin&id=eq.${staffId}`);
+    if (res.length && res[0].pin === pinBuffer) {
+      STATE.staffId = res[0].id;
+      STATE.staffName = res[0].name;
+      document.getElementById('logged-in-name').textContent = res[0].name;
+      pinBuffer = ''; updatePinDots();
+      showScreen('main');
+    } else {
+      pinBuffer = ''; updatePinDots();
+      showLoginError('Wrong PIN. Try again.');
+    }
+  } catch(e) { showLoginError('Error checking PIN.'); }
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg; el.classList.remove('hidden');
+}
+
+function logout() {
+  STATE.staffId = null; STATE.staffName = '';
+  pinBuffer = ''; updatePinDots();
+  document.getElementById('login-error').classList.add('hidden');
+  showScreen('login');
+}
+
+// ═══════════════════════════════════════════════════════
+// PRODUCT SEARCH
+// ═══════════════════════════════════════════════════════
+function searchProducts(query) {
+  clearTimeout(searchTimer);
+  const resultsEl = document.getElementById('search-results');
+  const loadingEl = document.getElementById('search-loading');
+  if (!query || query.length < 2) { resultsEl.innerHTML = ''; return; }
+  loadingEl.classList.remove('hidden');
+  searchTimer = setTimeout(async () => {
+    try {
+      const data = await squareSearch(query);
+      loadingEl.classList.add('hidden');
+      squareResultsCache = data.items || [];
+      const items = squareResultsCache;
+      if (!items.length) { resultsEl.innerHTML = '<div class="text-dim text-sm" style="padding:10px">No products found in Square</div>'; return; }
+      resultsEl.innerHTML = items.slice(0, 8).map((item, idx) => {
+        const v = item.item_data?.variations?.[0]?.item_variation_data;
+        const price = v?.price_money ? (v.price_money.amount / 100).toFixed(2) : '';
+        const cat = item.item_data?.category?.name || '';
+        return `<div class="result-item" onclick="selectSquareProduct(${idx})">
+          <div class="result-name">${item.item_data?.name || 'Unknown'}</div>
+          <div class="result-meta">${[cat, price ? '$'+price : ''].filter(Boolean).join(' · ')}</div>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      loadingEl.classList.add('hidden');
+      resultsEl.innerHTML = `<div class="error-msg">Square search failed. ${e.message}</div>`;
+    }
+  }, 400);
+}
+
+function selectSquareProduct(idx) {
+  const item = squareResultsCache[idx];
+  if (!item) { showToast('Product not found', true); return; }
+  const name = item.item_data?.name || 'Unknown';
+  const cat = guessCategory(item);
+  // Store partial product, show style picker
+  STATE.pendingProduct = { item, name, cat };
+  showStylePicker(name, cat);
+}
+
+function showStylePicker(name, cat) {
+  document.getElementById('style-picker-product-name').textContent = name;
+  const grid = document.getElementById('style-picker-grid');
+  const styles = STYLE_PICKER_OPTIONS[cat] || STYLE_PICKER_OPTIONS['other'];
+  grid.innerHTML = '<div class="style-grid">' + styles.map(s =>
+    `<div class="style-btn" onclick="selectStyle(this, '${s.value}')">
+      <strong>${s.label}</strong>${s.desc}
+    </div>`
+  ).join('') + '</div>';
+  document.getElementById('style-picker-modal').classList.remove('hidden');
+}
+
+function selectStyle(el, value) {
+  document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  el.dataset.selectedValue = value;
+}
+
+function confirmStylePick() {
+  const selected = document.querySelector('.style-btn.selected');
+  if (!selected) { showToast('Pick a style first', true); return; }
+  const { item, name, cat } = STATE.pendingProduct;
+  STATE.currentProduct = {
+    square_id: item.id,
+    name,
+    category: cat,
+    subcategory: selected.dataset.selectedValue,
+    in_stock: true
+  };
+  closeStylePicker();
+  startTasting();
+}
+
+function closeStylePicker() {
+  document.getElementById('style-picker-modal').classList.add('hidden');
+  STATE.pendingProduct = null;
+}
+
+// Square category ID map from your account
+const SQUARE_CAT_MAP = {
+  'NWS6KAENCRUMHVT6FN7BLRZU': 'beer',
+  'E344NEMGMOVCB3E5TDYMABEA': 'wine',
+  'EYTLDIKWLA75QBGK5XHSW3E3': 'spirits',
+  '7IAOLRWUXFPGDBMJPD6SLEOL': 'cider',
+  '3H46EEUNDXIK2TUM4VCARUTP': 'noalc',
+};
+
+// Spirits sub-type detection by name
+function guessSpiritsType(name) {
+  const n = name.toLowerCase();
+  if (n.includes('gin')) return 'gin';
+  if (n.includes('whisky') || n.includes('whiskey')) return 'whisky';
+  return 'spirits';
+}
+
+function guessCategory(item) {
+  // Use reporting_category ID first (most reliable)
+  const repCatId = item.item_data?.reporting_category?.id || '';
+  // Also check categories array
+  const catIds = (item.item_data?.categories || []).map(c => c.id);
+  const allIds = [repCatId, ...catIds].filter(Boolean);
+
+  for (const id of allIds) {
+    if (SQUARE_CAT_MAP[id]) {
+      const mapped = SQUARE_CAT_MAP[id];
+      if (mapped === 'spirits') return guessSpiritsType(item.item_data?.name || '');
+      return mapped;
+    }
+  }
+  // Fallback: name-based
+  const name = (item.item_data?.name || '').toLowerCase();
+  if (name.includes('gin')) return 'gin';
+  if (name.includes('whisky') || name.includes('whiskey')) return 'whisky';
+  return 'other';
+}
+
+function guessSubcategory(item, cat) {
+  if (cat !== 'beer') return '';
+  const name = (item.item_data?.name || '').toLowerCase();
+  if (name.includes('hazy') || name.includes('neipa') || name.includes('juicy')) return 'Juicy + Bold';
+  if (name.includes('ipa') || name.includes('west coast') || name.includes('pale')) return 'Bitter + Bold';
+  if (name.includes('sour') || name.includes('saison') || name.includes('gose') || name.includes('wild')) return 'Wild + Tart';
+  if (name.includes('stout') || name.includes('porter') || name.includes('dark')) return 'Dark + Deep';
+  if (name.includes('lager') || name.includes('pils')) return 'Clean + Classic';
+  return '';
+}
+
+// ═══════════════════════════════════════════════════════
+// NEW PRODUCT (manual)
+// ═══════════════════════════════════════════════════════
+const SUBCATS = {
+  beer: ['Clean + Easy','Clean + Classic','Bright + Hoppy','Bitter + Bold','Juicy + Bold','Dark + Deep','Wild + Tart','Old + New'],
+  wine: ['White — Light','White — Full','Rosé','Red — Light','Red — Medium','Red — Bold','Sparkling','Dessert'],
+  whisky: ['Single Malt','Blended','Bourbon Style','Rye Style','Other'],
+  gin: ['London Dry','Contemporary','Navy Strength','Sloe','Other'],
+  other: []
+};
+
+function updateSubcategoryOptions() {
+  const cat = document.getElementById('new-category').value;
+  const field = document.getElementById('subcategory-field');
+  const sel = document.getElementById('new-subcategory');
+  const subs = SUBCATS[cat] || [];
+  if (!subs.length) { field.style.display = 'none'; return; }
+  field.style.display = 'block';
+  sel.innerHTML = '<option value="">Select style...</option>' + subs.map(s => `<option value="${s}">${s}</option>`).join('');
+}
+
+function startNewProduct() {
+  const name = document.getElementById('new-product-name').value.trim();
+  const cat  = document.getElementById('new-category').value;
+  if (!name) { showToast('Enter a product name', true); return; }
+  if (!cat)  { showToast('Select a drink type', true); return; }
+  STATE.currentProduct = {
+    square_id: null,
+    name,
+    producer: document.getElementById('new-producer').value.trim(),
+    category: cat,
+    subcategory: document.getElementById('new-subcategory').value || '',
+    abv: parseFloat(document.getElementById('new-abv').value) || null,
+    in_stock: false
+  };
+  startTasting();
+}
+
+// ═══════════════════════════════════════════════════════
+// TASTING SCREEN SETUP
+// ═══════════════════════════════════════════════════════
+function startTasting() {
+  const p = STATE.currentProduct;
+  document.getElementById('tasting-product-badge').innerHTML = `
+    <div class="product-badge">
+      <div>
+        <div class="product-badge-name">${p.name}</div>
+        <div class="product-badge-meta">${[p.producer, p.subcategory || p.category].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div class="product-badge-cat">${p.category}</div>
+    </div>`;
+
+  buildStars('stars-overall');
+  buildStars('stars-taste');
+  buildStars('stars-smell');
+  buildStars('stars-appearance');
+  buildStars('stars-adv-overall');
+
+  setMode('quick');
+  showScreen('tasting');
+}
+
+function buildStars(containerId) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const s = document.createElement('span');
+    s.className = 'star'; s.textContent = '★'; s.dataset.val = i;
+    s.onclick = () => setStars(containerId, i);
+    el.appendChild(s);
+  }
+}
+
+function setStars(containerId, val) {
+  const el = document.getElementById(containerId);
+  el.dataset.value = val;
+  el.querySelectorAll('.star').forEach((s, i) => {
+    s.classList.toggle('active', i < val);
+  });
+}
+
+function getStars(containerId) {
+  return parseFloat(document.getElementById(containerId).dataset.value || 0);
+}
+
+// ═══════════════════════════════════════════════════════
+// MODE SWITCHING
+// ═══════════════════════════════════════════════════════
+function setMode(mode) {
+  STATE.currentMode = mode;
+  ['quick','guided','advanced'].forEach(m => {
+    document.getElementById('mode-' + m).classList.toggle('hidden', m !== mode);
+    document.getElementById('tab-' + m).classList.toggle('active', m === mode);
+  });
+  if (mode === 'guided') buildGuidedMode();
+  if (mode === 'advanced') buildAdvancedMode();
+}
+
+// ═══════════════════════════════════════════════════════
+// GUIDED MODE — drink-type reactive sliders
+// ═══════════════════════════════════════════════════════
+const GUIDED_PROFILES = {
+  beer: {
+    sliders: [
+      { id: 'bitterness', left: 'Smooth', right: 'Bitter' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'carbonation', left: 'Flat', right: 'Highly Carbonated' },
+      { id: 'sweetness', left: 'Dry', right: 'Sweet' },
+      { id: 'roast', left: 'Pale', right: 'Roasty' },
+      { id: 'hops', left: 'Malt-forward', right: 'Hop-forward' }
+    ],
+    ratings: ['Aroma','Appearance','Flavour','Mouthfeel','Overall']
+  },
+  'beer:Wild + Tart': {
+    sliders: [
+      { id: 'acidity', left: 'Low Acid', right: 'Highly Tart' },
+      { id: 'funk', left: 'Clean', right: 'Funky / Wild' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'carbonation', left: 'Flat', right: 'Highly Carbonated' },
+      { id: 'fruit', left: 'No Fruit', right: 'Fruity' },
+      { id: 'sweetness', left: 'Dry', right: 'Residual Sweet' }
+    ],
+    ratings: ['Sourness Balance','Funk Level','Fruit Character','Carbonation','Overall']
+  },
+  'beer:Juicy + Bold': {
+    sliders: [
+      { id: 'juicy', left: 'Crisp', right: 'Juicy' },
+      { id: 'bitterness', left: 'Low IBU', right: 'Bitter' },
+      { id: 'haze', left: 'Clear', right: 'Hazy' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'tropical', left: 'Subtle', right: 'Tropical Bomb' },
+      { id: 'carbonation', left: 'Soft', right: 'Crisp Carb' }
+    ],
+    ratings: ['Hop Aroma','Juiciness','Bitterness Balance','Body','Overall']
+  },
+  'beer:Bitter + Bold': {
+    sliders: [
+      { id: 'bitterness', left: 'Mild', right: 'Very Bitter' },
+      { id: 'malt', left: 'Hop-driven', right: 'Malt Backbone' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'carbonation', left: 'Soft', right: 'Crisp' },
+      { id: 'dry', left: 'Sweet Finish', right: 'Dry Finish' },
+      { id: 'resin', left: 'Floral', right: 'Resinous / Piney' }
+    ],
+    ratings: ['Bitterness Quality','Hop Clarity','Malt Balance','Dry Finish','Overall']
+  },
+  'beer:Dark + Deep': {
+    sliders: [
+      { id: 'roast', left: 'Mild Roast', right: 'Intense Roast' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'sweetness', left: 'Dry', right: 'Sweet' },
+      { id: 'coffee', left: 'No Coffee', right: 'Coffee-forward' },
+      { id: 'chocolate', left: 'No Chocolate', right: 'Chocolatey' },
+      { id: 'carbonation', left: 'Still', right: 'Carbonated' }
+    ],
+    ratings: ['Roast Character','Body & Texture','Aroma Complexity','Sweetness Balance','Overall']
+  },
+  wine: {
+    sliders: [
+      { id: 'sweetness', left: 'Bone Dry', right: 'Sweet' },
+      { id: 'acidity', left: 'Low Acid', right: 'High Acid' },
+      { id: 'tannin', left: 'Soft Tannin', right: 'Grippy Tannin' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'alcohol', left: 'Low Alcohol', right: 'High Alcohol' },
+      { id: 'oak', left: 'Unoaked', right: 'Heavily Oaked' }
+    ],
+    ratings: ['Nose Complexity','Palate Balance','Finish Length','Typicity','Overall']
+  },
+  whisky: {
+    sliders: [
+      { id: 'peat', left: 'Unpeated', right: 'Heavily Peated' },
+      { id: 'sweetness', left: 'Dry', right: 'Sweet' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'oak', left: 'Light Oak', right: 'Heavy Oak' },
+      { id: 'fruit', left: 'Grain-forward', right: 'Fruity' },
+      { id: 'heat', left: 'Smooth', right: 'Hot / Spirit-forward' }
+    ],
+    ratings: ['Nose Complexity','Palate Development','Finish Length','Balance','Overall']
+  },
+  gin: {
+    sliders: [
+      { id: 'juniper', left: 'Subtle Juniper', right: 'Juniper-forward' },
+      { id: 'citrus', left: 'No Citrus', right: 'Citrus-driven' },
+      { id: 'floral', left: 'Herbaceous', right: 'Floral' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'sweetness', left: 'Dry', right: 'Sweet' },
+      { id: 'spice', left: 'Soft', right: 'Spicy / Peppery' }
+    ],
+    ratings: ['Juniper Balance','Botanical Complexity','Nose','Palate','Overall']
+  }
+};
+
+function getProfile(key) {
+  const p = STATE.currentProduct;
+  const subKey = p.category + ':' + p.subcategory;
+  return GUIDED_PROFILES[subKey] || GUIDED_PROFILES[p.category] || GUIDED_PROFILES.beer;
+}
+
+function buildGuidedMode() {
+  const profile = getProfile();
+  const slidersEl = document.getElementById('guided-sliders');
+  const ratingsEl = document.getElementById('guided-ratings');
+
+  slidersEl.innerHTML = profile.sliders.map(s => `
+    <div class="slider-item">
+      <div class="slider-labels"><span>${s.left}</span><span>${s.right}</span></div>
+      <input type="range" id="slider-${s.id}" min="0" max="100" value="50"
+        oninput="document.getElementById('sv-${s.id}').textContent = this.value">
+      <div class="slider-value" id="sv-${s.id}">50</div>
+    </div>`).join('');
+
+  ratingsEl.innerHTML = '<div class="rating-grid">' + profile.ratings.map(r => {
+    const rid = 'gr-' + r.toLowerCase().replace(/\s+/g,'-');
+    return `<div class="field"><label>${r}</label><div class="star-group" id="${rid}"></div></div>`;
+  }).join('') + '</div>';
+
+  profile.ratings.forEach(r => {
+    buildStars('gr-' + r.toLowerCase().replace(/\s+/g,'-'));
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// ADVANCED MODE — drink-type reactive flavour notes
+// ═══════════════════════════════════════════════════════
+const ADVANCED_PROFILES = {
+  beer: {
+    colours: { track: 'linear-gradient(to right, #fff7e0, #f5c842, #c17b1a, #6b3a1f, #1a0a00)', stops: ['Pale Straw','Gold','Amber','Brown','Black'] },
+    appearance: ['Hazy','Hazy with yeast','Clear','Bright','Flat white head','Dense white head','Tan head','No head'],
+    nose: {
+      'Hop': ['Citrus','Tropical','Pine','Resin','Floral','Grassy','Herbal','Spice'],
+      'Malt': ['Biscuit','Bread','Toffee','Caramel','Roast','Chocolate','Coffee','Smoke'],
+      'Fermentation': ['Fruity esters','Clean','Sulphur','Yeast','Barnyard','Brett','Lactic','Acetic'],
+      'Other': ['Stone fruit','Berry','Vanilla','Oak','Honey','Mineral']
+    },
+    palate: {
+      'Flavour': ['Citrus hop','Tropical hop','Pine/Resin','Biscuit malt','Caramel','Roast','Chocolate','Coffee','Smoke','Fruity','Clean','Tart'],
+      'Structure': ['Low carbonation','Medium carbonation','High carbonation','Light body','Medium body','Full body','Soft','Creamy','Astringent','Dry finish','Sweet finish']
+    },
+    finish: ['Short','Medium','Long','Bitter','Roasty','Sweet','Dry','Clean','Warming']
+  },
+  wine: {
+    colours: { track: 'linear-gradient(to right, #f5f0d8, #e8d870, #c8a830, #e8c0b0, #e07060, #8b2020, #3a0a18)', stops: ['White','Gold','Amber','Rosé','Red','Deep Red','Dark'] },
+    appearance: ['Watery rim','Pale straw','Straw','Gold','Deep gold','Amber','Salmon','Pink','Light ruby','Ruby','Garnet','Deep garnet','Tawny','Purple','Inky'],
+    nose: {
+      'Primary Fruit': ['Citrus','Apple','Pear','Peach','Apricot','Tropical','Red berry','Blackcurrant','Plum','Cherry','Fig'],
+      'Secondary': ['Brioche','Toast','Cream','Butter','Cheese rind','Yoghurt'],
+      'Tertiary': ['Vanilla','Coconut','Cedar','Sandalwood','Tobacco','Leather','Petrol','Honey','Dried fruit','Nuts','Mushroom','Earth']
+    },
+    palate: {
+      'Flavour': ['Citrus','Apple','Stone fruit','Tropical','Red berry','Dark fruit','Dried fruit','Savoury','Earthy'],
+      'Structure': ['Bone dry','Dry','Off-dry','Medium sweet','Sweet','Low acid','Med acid','High acid','Grippy tannin','Soft tannin','No tannin','Light body','Medium body','Full body']
+    },
+    finish: ['Short (<5s)','Medium (5-10s)','Long (>10s)','Fruity','Tannic','Acidic','Bitter','Savoury','Oaky','Warming','Clean']
+  },
+  whisky: {
+    colours: { track: 'linear-gradient(to right, #f5e8b0, #d4a020, #a06010, #6b3010, #2a1008)', stops: ['New Make','Gold','Honey','Amber','Dark'] },
+    appearance: ['Water white','Very pale','Pale gold','Gold','Deep gold','Amber','Deep amber','Dark mahogany'],
+    nose: {
+      'Fruit': ['Orchard fruit','Citrus','Tropical','Dried fruit','Berry','Maraschino cherry'],
+      'Grain & Malt': ['Cereal','Malt','Biscuit','Bread','Porridge'],
+      'Wood & Distillery': ['Vanilla','Oak','Coconut','Caramel','Toffee','Cloves','Cinnamon'],
+      'Peat & Smoke': ['Medicinal','Iodine','Bonfire','Ash','Tar','Earthy peat','Grassy smoke'],
+      'Wine Influence': ['Sherry','Port','Wine','Dried fruit','Christmas cake']
+    },
+    palate: {
+      'Flavour': ['Vanilla','Honey','Caramel','Toffee','Fruit','Malt','Spice','Peat','Smoke','Oak','Dried fruit','Savoury'],
+      'Texture': ['Watery','Light','Medium body','Full body','Oily','Creamy','Dry','Sweet','Warming','Burning']
+    },
+    finish: ['Very short','Short','Medium','Long','Very long','Dry','Sweet','Spicy','Peaty','Fruity','Oaky','Warming']
+  },
+  gin: {
+    colours: { track: 'linear-gradient(to right, #f8f8f0, #e8f0d8, #d0e8b0)', stops: ['Clear','Pale','Straw'] },
+    appearance: ['Crystal clear','Clear','Slight haze','Pale yellow','Straw'],
+    nose: {
+      'Botanical': ['Juniper','Coriander seed','Angelica root','Orris root','Liquorice','Cassia'],
+      'Citrus': ['Lemon','Lime','Orange','Grapefruit','Bergamot'],
+      'Floral': ['Rose','Lavender','Violet','Elderflower','Jasmine'],
+      'Herbal & Spice': ['Rosemary','Basil','Pepper','Cardamom','Ginger','Thyme','Sage'],
+      'Other': ['Pine','Cucumber','Melon','Earthy','Honey','Mineral']
+    },
+    palate: {
+      'Flavour': ['Juniper-led','Citrus-led','Floral-led','Spice-led','Herbal','Balanced botanical','Pine','Earthy'],
+      'Texture': ['Light body','Medium body','Full body','Dry','Off-dry','Warming','Spirit-forward','Smooth']
+    },
+    finish: ['Short','Medium','Long','Juniper','Citrus','Spice','Floral','Dry','Sweet','Warming']
+  }
+};
+
+function buildAdvancedMode() {
+  const profile = ADVANCED_PROFILES[STATE.currentProduct.category] || ADVANCED_PROFILES.beer;
+
+  // Appearance tags
+  const appEl = document.getElementById('advanced-appearance');
+  appEl.innerHTML = '<div class="tag-grid">' + profile.appearance.map(a =>
+    `<div class="tag" onclick="this.classList.toggle('selected')">${a}</div>`
+  ).join('') + '</div>';
+
+  // Colour track
+  const colWrap = document.getElementById('colour-track-wrap');
+  colWrap.innerHTML = `
+    <div class="colour-track" id="colour-track" style="background:${profile.colours.track}" onclick="setColour(event)">
+      <div class="colour-indicator" id="colour-indicator" style="left:50%"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim);margin-top:4px">
+      ${profile.colours.stops.map(s => `<span>${s}</span>`).join('')}
+    </div>
+    <div id="colour-value" style="text-align:center;font-size:11px;color:var(--accent);margin-top:4px">50%</div>`;
+
+  // Nose
+  const noseEl = document.getElementById('advanced-nose');
+  noseEl.innerHTML = Object.entries(profile.nose).map(([group, tags]) => `
+    <div class="wheel-section">
+      <div class="wheel-section-title">${group}</div>
+      <div class="tag-grid">${tags.map(t => `<div class="tag" onclick="this.classList.toggle('selected')">${t}</div>`).join('')}</div>
+    </div>`).join('');
+
+  // Palate
+  const palEl = document.getElementById('advanced-palate');
+  palEl.innerHTML = Object.entries(profile.palate).map(([group, tags]) => `
+    <div class="wheel-section">
+      <div class="wheel-section-title">${group}</div>
+      <div class="tag-grid">${tags.map(t => `<div class="tag" onclick="this.classList.toggle('selected')">${t}</div>`).join('')}</div>
+    </div>`).join('');
+
+  // Finish
+  const finEl = document.getElementById('advanced-finish');
+  finEl.innerHTML = '<div class="tag-grid">' + profile.finish.map(t =>
+    `<div class="tag" onclick="this.classList.toggle('selected')">${t}</div>`
+  ).join('') + '</div>';
+}
+
+function setColour(e) {
+  const track = document.getElementById('colour-track');
+  const rect = track.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+  document.getElementById('colour-indicator').style.left = pct + '%';
+  document.getElementById('colour-value').textContent = Math.round(pct) + '%';
+}
+
+// ═══════════════════════════════════════════════════════
+// SAVE TASTING NOTE
+// ═══════════════════════════════════════════════════════
+async function saveTastingNote() {
+  const btn = document.getElementById('save-btn');
+  const errEl = document.getElementById('save-error');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  errEl.classList.add('hidden');
+
+  try {
+    // Ensure product exists in DB
+    let productId;
+    const p = STATE.currentProduct;
+
+    if (p.square_id) {
+      // Try to find existing
+      const existing = await sbGet('products', `square_id=eq.${p.square_id}`);
+      if (existing.length) {
+        productId = existing[0].id;
+      } else {
+        const created = await sbPost('products', { square_id: p.square_id, name: p.name, category: p.category, subcategory: p.subcategory, in_stock: true });
+        productId = created[0].id;
+      }
+    } else {
+      const created = await sbPost('products', { name: p.name, producer: p.producer, category: p.category, subcategory: p.subcategory, abv: p.abv, in_stock: false });
+      productId = created[0].id;
+    }
+
+    const mode = STATE.currentMode;
+    const note = {
+      product_id: productId,
+      staff_id: STATE.staffId,
+      mode,
+      category: p.category,
+      subcategory: p.subcategory || null
+    };
+
+    if (mode === 'quick') {
+      note.rating_overall    = getStars('stars-overall') || null;
+      note.rating_taste      = getStars('stars-taste') || null;
+      note.rating_smell      = getStars('stars-smell') || null;
+      note.rating_appearance = getStars('stars-appearance') || null;
+      note.open_notes        = document.getElementById('quick-notes').value || null;
+      note.would_recommend   = document.getElementById('quick-recommend').checked;
+      note.staff_pick        = document.getElementById('quick-staffpick').checked;
+    }
+
+    if (mode === 'guided') {
+      const profile = getProfile();
+      const sliders = {};
+      profile.sliders.forEach(s => { sliders[s.id] = parseInt(document.getElementById('slider-' + s.id).value); });
+      const ratings = {};
+      profile.ratings.forEach(r => { const rid = 'gr-' + r.toLowerCase().replace(/\s+/g,'-'); ratings[r] = getStars(rid); });
+      note.sliders = sliders;
+      note.guided_ratings = ratings;
+      note.rating_overall = ratings['Overall'] || null;
+      note.open_notes = document.getElementById('guided-notes').value || null;
+      note.would_recommend = document.getElementById('guided-recommend').checked;
+      note.staff_pick = document.getElementById('guided-staffpick').checked;
+    }
+
+    if (mode === 'advanced') {
+      note.appearance_notes = { tags: getSelectedTags('advanced-appearance'), notes: document.getElementById('adv-appearance-notes').value };
+      note.nose_notes = { tags: getSelectedTags('advanced-nose'), notes: document.getElementById('adv-nose-notes').value };
+      note.palate_notes = { tags: getSelectedTags('advanced-palate'), notes: document.getElementById('adv-palate-notes').value };
+      note.finish_notes = { tags: getSelectedTags('advanced-finish'), notes: document.getElementById('adv-finish-notes').value };
+      note.colour_value = document.getElementById('colour-value')?.textContent || null;
+      note.rating_overall = getStars('stars-adv-overall') || null;
+      note.open_notes = document.getElementById('adv-conclusion').value || null;
+      note.would_recommend = document.getElementById('adv-recommend').checked;
+      note.staff_pick = document.getElementById('adv-staffpick').checked;
+    }
+
+    await sbPost('tasting_notes', note);
+    showToast('Note saved ✓');
+    resetTastingForm();
+    showScreen('main');
+  } catch(e) {
+    errEl.textContent = 'Save failed: ' + e.message;
+    errEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Note';
+  }
+}
+
+function getSelectedTags(containerId) {
+  const el = document.getElementById(containerId);
+  return [...el.querySelectorAll('.tag.selected')].map(t => t.textContent);
+}
+
+function resetTastingForm() {
+  ['overall','taste','smell','appearance'].forEach(k => buildStars('stars-' + k));
+  buildStars('stars-adv-overall');
+  document.getElementById('quick-notes').value = '';
+  document.getElementById('quick-recommend').checked = false;
+  document.getElementById('quick-staffpick').checked = false;
+  STATE.currentProduct = null;
+  document.getElementById('product-search').value = '';
+  document.getElementById('search-results').innerHTML = '';
+  document.getElementById('new-product-name').value = '';
+  document.getElementById('new-producer').value = '';
+  document.getElementById('new-abv').value = '';
+  document.getElementById('new-category').value = '';
+  document.getElementById('subcategory-field').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════
+// NOTES LIST
+// ═══════════════════════════════════════════════════════
+async function loadNotes() {
+  const listEl = document.getElementById('notes-list');
+  listEl.innerHTML = '<div class="loading"><span class="spinner"></span>Loading notes...</div>';
+  try {
+    const notes = await sbGet('tasting_notes',
+      'select=*,products(name,producer,category,subcategory),staff(name)&order=created_at.desc&limit=100'
+    );
+    STATE.allNotes = notes;
+    document.getElementById('notes-count').textContent = notes.length + ' notes';
+    renderNotes(notes);
+  } catch(e) {
+    listEl.innerHTML = `<div class="error-msg" style="padding:20px">Failed to load: ${e.message}</div>`;
+  }
+}
+
+function filterNotes() {
+  const q = document.getElementById('notes-search').value.toLowerCase();
+  const cat = document.getElementById('notes-filter-cat').value;
+  const filtered = STATE.allNotes.filter(n => {
+    const name = (n.products?.name || '').toLowerCase();
+    const matchQ = !q || name.includes(q);
+    const matchCat = !cat || n.category === cat;
+    return matchQ && matchCat;
+  });
+  renderNotes(filtered);
+}
+
+function renderNotes(notes) {
+  const listEl = document.getElementById('notes-list');
+  if (!notes.length) {
+    listEl.innerHTML = '<div class="empty"><div class="empty-icon">○</div><div>No tasting notes yet</div></div>';
+    return;
+  }
+  listEl.innerHTML = notes.map(n => {
+    const p = n.products || {};
+    const score = n.rating_overall;
+    const tags = [];
+    if (n.mode) tags.push(n.mode);
+    if (n.staff_pick) tags.push('staff pick');
+    if (n.would_recommend) tags.push('recommend');
+    const subcat = n.subcategory || p.subcategory || '';
+    const meta = [n.staff?.name, subcat || n.category, formatDate(n.created_at)].filter(Boolean).join(' · ');
+    const noteSummary = n.open_notes ? `<div class="note-card-body">${n.open_notes.substring(0,120)}${n.open_notes.length > 120 ? '…' : ''}</div>` : '';
+    const tagsHtml = tags.length ? `<div class="note-tags-row">${tags.map(t => `<span class="note-tag-sm">${t}</span>`).join('')}</div>` : '';
+    return `<div class="note-card">
+      <div class="note-card-header">
+        <div>
+          <div class="note-card-title">${p.name || 'Unknown product'}</div>
+          <div class="note-card-meta">${meta}</div>
+        </div>
+        ${score ? `<div class="note-card-score">${score}</div>` : ''}
+      </div>
+      ${noteSummary}
+      ${tagsHtml}
+    </div>`;
+  }).join('');
+}
+
+function formatDate(dt) {
+  if (!dt) return '';
+  return new Date(dt).toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+}
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isError ? 'var(--danger)' : 'var(--accent)';
+  t.style.color = isError ? '#fff' : '#0e0e0d';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+function init() {
+  buildNumpad();
+  if (loadConfig()) {
+    showScreen('login');
+    loadStaff();
+  } else {
+    showScreen('config');
+  }
+}
+
+init();
+</script>
+</body>
+</html>CTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tasting Notes — Jannali Bottle Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  /* ── CONFIG ──────────────────────────────────────────────── */
+  :root {
+    --bg:        #111a12;
+    --surface:   #182019;
+    --border:    #2a3d2c;
+    --muted:     #3d5440;
+    --text:      #e4ede5;
+    --text-dim:  #7a9b7d;
+    --accent:    #6faf77;
+    --accent-dk: #5e8363;
+    --accent-lt: #acc8a8;
+    --dark:      #243726;
+    --danger:    #c86e6e;
+    --radius:    6px;
+    --sans:      'DM Sans', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── LAYOUT ──────────────────────────────────────────────── */
+  #app { max-width: 680px; margin: 0 auto; padding: 24px 16px 80px; }
+
+  .header {
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px; margin-bottom: 24px;
+  }
+  .header h1 { font-family: var(--sans); font-size: 16px; font-weight: 600; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; }
+  .header span { font-size: 11px; color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* ── SCREEN SYSTEM ───────────────────────────────────────── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── CARDS & PANELS ──────────────────────────────────────── */
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .panel-title {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 16px;
+  }
+
+  /* ── FORM ELEMENTS ───────────────────────────────────────── */
+  label { font-size: 12px; color: var(--text-dim); display: block; margin-bottom: 6px; letter-spacing: 0.03em; }
+
+  input[type=text], input[type=password], input[type=number], textarea, select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--accent); }
+  select option { background: var(--bg); }
+  textarea { resize: vertical; min-height: 80px; }
+
+  .field { margin-bottom: 14px; }
+
+  /* ── BUTTONS ─────────────────────────────────────────────── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 20px; border-radius: var(--radius);
+    font-family: var(--sans); font-size: 13px; letter-spacing: 0.04em;
+    cursor: pointer; border: none; transition: all 0.15s; font-weight: 500;
+  }
+  .btn-primary { background: var(--accent); color: #0e0e0d; }
+  .btn-primary:hover { background: #d4b87a; }
+  .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+  .btn-full { width: 100%; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+  /* ── SEARCH RESULTS ──────────────────────────────────────── */
+  #search-results { margin-top: 8px; }
+  .result-item {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .result-item:hover { border-color: var(--accent); background: rgba(200,169,110,0.05); }
+  .result-name { font-size: 15px; color: var(--text); }
+  .result-meta { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+
+  /* ── MODE TABS ───────────────────────────────────────────── */
+  .mode-tabs { display: flex; gap: 0; margin-bottom: 20px; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .mode-tab {
+    flex: 1; padding: 10px 6px; text-align: center;
+    font-family: var(--sans); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; background: var(--bg); color: var(--text-dim);
+    border: none; transition: all 0.15s;
+  }
+  .mode-tab.active { background: var(--accent); color: #0e0e0d; font-weight: 500; }
+
+  /* ── STAR RATING ─────────────────────────────────────────── */
+  .star-group { display: flex; gap: 6px; align-items: center; }
+  .star {
+    font-size: 20px; cursor: pointer; color: var(--muted);
+    transition: color 0.1s; user-select: none;
+  }
+  .star.active { color: var(--accent); }
+  .star-label { font-size: 11px; color: var(--text-dim); margin-left: 8px; }
+
+  .rating-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* ── SLIDERS ─────────────────────────────────────────────── */
+  .slider-item { margin-bottom: 18px; }
+  .slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); margin-bottom: 6px; }
+  input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px;
+    background: var(--border); border-radius: 2px; outline: none;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); cursor: pointer;
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  .slider-value { text-align: center; font-size: 11px; color: var(--accent); margin-top: 4px; }
+
+  /* ── CHECKBOXES / TAG GRID ───────────────────────────────── */
+  .tag-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    padding: 4px 10px; border-radius: 20px;
+    border: 1px solid var(--border); font-size: 11px;
+    cursor: pointer; transition: all 0.12s; color: var(--text-dim);
+    user-select: none;
+  }
+  .tag.selected { border-color: var(--accent); color: var(--accent); background: rgba(111,175,119,0.12); }
+
+  /* ── COLOUR SLIDER ───────────────────────────────────────── */
+  .colour-track {
+    height: 24px; border-radius: 12px; margin: 8px 0;
+    border: 1px solid var(--border); position: relative; overflow: visible;
+  }
+  .colour-indicator {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 2px solid white; box-shadow: 0 0 0 1px rgba(0,0,0,0.4);
+    transition: left 0.1s; pointer-events: none;
+  }
+
+  /* ── SECTION DIVIDER ─────────────────────────────────────── */
+  .section-label {
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent-lt); margin: 20px 0 12px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* ── PRODUCT BADGE ───────────────────────────────────────── */
+  .product-badge {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+    margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;
+  }
+  .product-badge-name { font-size: 15px; color: var(--text); font-family: var(--sans); font-weight: 600; }
+  .product-badge-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .product-badge-cat {
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 3px; border: 1px solid var(--accent-dk); color: var(--accent-lt);
+  }
+
+  /* ── NOTES LIST ──────────────────────────────────────────── */
+  .note-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px;
+    margin-bottom: 10px;
+  }
+  .note-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .note-card-title { font-size: 15px; color: var(--text); font-family: var(--sans); font-weight: 600; }
+  .note-card-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .note-card-score { font-size: 22px; color: var(--accent); font-weight: 300; }
+  .note-card-body { font-size: 12px; color: var(--text-dim); line-height: 1.7; }
+  .note-tags-row { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .note-tag-sm { font-size: 11px; padding: 2px 7px; border-radius: 3px; background: rgba(111,175,119,0.1); color: var(--accent-lt); }
+
+  /* ── LOGIN ───────────────────────────────────────────────── */
+  .login-wrap { max-width: 320px; margin: 60px auto; }
+  .pin-dots { display: flex; gap: 10px; justify-content: center; margin: 16px 0; }
+  .pin-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--border); transition: background 0.1s; }
+  .pin-dot.filled { background: var(--accent); border-color: var(--accent); }
+  .numpad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+  .num-btn {
+    padding: 16px; text-align: center; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    font-family: var(--sans); font-size: 16px; cursor: pointer;
+    transition: all 0.12s; color: var(--text);
+  }
+  .num-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ── CONFIG SCREEN ───────────────────────────────────────── */
+  .config-note { font-size: 11px; color: var(--text-dim); margin-top: 6px; line-height: 1.5; }
+
+  /* ── NAV BAR ─────────────────────────────────────────────── */
+  .nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); border-top: 1px solid var(--border); display: flex; }
+  .nav-btn {
+    flex: 1; padding: 12px 8px; text-align: center;
+    font-family: var(--sans); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+    cursor: pointer; background: none; border: none; color: var(--text-dim);
+    transition: color 0.12s;
+  }
+  .nav-btn.active { color: var(--accent); }
+  .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+
+  /* ── TOAST ───────────────────────────────────────────────── */
+  #toast {
+    position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--accent); color: #0e0e0d; padding: 10px 20px;
+    border-radius: 20px; font-size: 12px; font-weight: 500;
+    opacity: 0; transition: all 0.25s; pointer-events: none; white-space: nowrap;
+    z-index: 100;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ── LOADING ─────────────────────────────────────────────── */
+  .loading { text-align: center; padding: 30px; color: var(--text-dim); font-size: 12px; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── EMPTY STATE ─────────────────────────────────────────── */
+  .empty { text-align: center; padding: 40px 20px; color: var(--text-dim); }
+  .empty-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
+
+  /* ── UTILITIES ───────────────────────────────────────────── */
+  .flex-between { display: flex; justify-content: space-between; align-items: center; }
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .text-dim { color: var(--text-dim); }
+  .text-accent { color: var(--accent); }
+  .text-sm { font-size: 11px; }
+  .hidden { display: none !important; }
+  .error-msg { color: var(--danger); font-size: 11px; margin-top: 6px; }
+
+  /* ── FLAVOUR WHEEL ───────────────────────────────────────── */
+  .wheel-section { margin-bottom: 16px; }
+  .wheel-section-title { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; letter-spacing: 0.06em; }
+
+  /* ── STYLE PICKER MODAL ──────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    display: flex; align-items: flex-end; justify-content: center;
+    z-index: 200; padding: 16px;
+  }
+  .modal-overlay.hidden { display: none; }
+  .modal-sheet {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; width: 100%; max-width: 640px;
+    max-height: 80vh; overflow-y: auto;
+  }
+  .modal-title {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 8px;
+  }
+  .modal-product-name {
+    font-family: var(--sans); font-weight: 600; font-size: 17px;
+    color: var(--text); margin-bottom: 16px;
+  }
+  .style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .style-btn {
+    padding: 12px 10px; border-radius: var(--radius);
+    border: 1px solid var(--border); background: var(--bg);
+    font-family: var(--sans); font-size: 12px; color: var(--text-dim);
+    cursor: pointer; text-align: left; transition: all 0.12s; line-height: 1.4;
+  }
+  .style-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .style-btn strong { display: block; color: var(--text); font-size: 14px; margin-bottom: 2px; font-weight: 600; }
+  .style-btn.selected { border-color: var(--accent); background: rgba(200,169,110,0.1); color: var(--accent); }
+
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── CONFIG SCREEN ──────────────────────────────────── -->
+  <div id="screen-config" class="screen active">
+    <div class="header">
+      <h1>Setup</h1>
+      <span>Tasting Notes</span>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Square Credentials</div>
+      <div class="field">
+        <label>Production Access Token</label>
+        <input type="password" id="cfg-square-token" placeholder="sq0atp-..." autocomplete="off">
+      </div>
+      <div class="field">
+        <label>Location ID</label>
+        <input type="text" id="cfg-square-location" placeholder="LXXXXXXXXXXXXXXXXX">
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Supabase Credentials</div>
+      <div class="field">
+        <label>Project URL</label>
+        <input type="text" id="cfg-sb-url" placeholder="https://xxxx.supabase.co">
+      </div>
+      <div class="field">
+        <label>Anon / Public Key</label>
+        <input type="password" id="cfg-sb-key" placeholder="eyJ...">
+      </div>
+    </div>
+    <p class="config-note">These are stored locally on this device only. Never shared or sent anywhere other than Square and Supabase directly.</p>
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" onclick="saveConfig()">Save & Continue</button>
+    </div>
+    <div id="config-error" class="error-msg hidden"></div>
+  </div>
+
+  <!-- ── LOGIN SCREEN ───────────────────────────────────── -->
+  <div id="screen-login" class="screen">
+    <div class="header">
+      <h1>Tasting Notes</h1>
+    </div>
+    <div class="login-wrap">
+      <div class="panel">
+        <div class="panel-title" style="text-align:center">Who's tasting?</div>
+        <div class="field">
+          <label>Name</label>
+          <select id="staff-select">
+            <option value="">Loading staff...</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>PIN</label>
+          <div class="pin-dots" id="pin-dots">
+            <div class="pin-dot" id="dot-0"></div>
+            <div class="pin-dot" id="dot-1"></div>
+            <div class="pin-dot" id="dot-2"></div>
+            <div class="pin-dot" id="dot-3"></div>
+          </div>
+        </div>
+        <div class="numpad" id="numpad"></div>
+        <div id="login-error" class="error-msg hidden mt-8" style="text-align:center"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MAIN: SEARCH / ADD ─────────────────────────────── -->
+  <div id="screen-main" class="screen">
+    <div class="header">
+      <h1>Tasting Notes</h1>
+      <span id="logged-in-name"></span>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Find or add a product</div>
+      <div class="field">
+        <input type="text" id="product-search" placeholder="Search your Square inventory..." oninput="searchProducts(this.value)">
+      </div>
+      <div id="search-results"></div>
+      <div id="search-loading" class="hidden loading"><span class="spinner"></span>Searching...</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Or add something new</div>
+      <div class="field">
+        <label>Product Name</label>
+        <input type="text" id="new-product-name" placeholder="e.g. Balter XPA">
+      </div>
+      <div class="field">
+        <label>Producer</label>
+        <input type="text" id="new-producer" placeholder="e.g. Balter Brewing">
+      </div>
+      <div class="field">
+        <label>Drink Type</label>
+        <select id="new-category" onchange="updateSubcategoryOptions()">
+          <option value="">Select type...</option>
+          <option value="beer">Beer</option>
+          <option value="wine">Wine</option>
+          <option value="whisky">Whisky</option>
+          <option value="gin">Gin</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="field" id="subcategory-field" style="display:none">
+        <label>Style / Category</label>
+        <select id="new-subcategory"></select>
+      </div>
+      <div class="field">
+        <label>ABV %</label>
+        <input type="number" id="new-abv" placeholder="e.g. 5.2" min="0" max="100" step="0.1">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="startNewProduct()">Start Tasting</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TASTING SCREEN ─────────────────────────────────── -->
+  <div id="screen-tasting" class="screen">
+    <div class="header">
+      <h1>Tasting</h1>
+      <span id="tasting-back" style="cursor:pointer;color:var(--accent)" onclick="goBack()">← back</span>
+    </div>
+
+    <div id="tasting-product-badge"></div>
+
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="setMode('quick')" id="tab-quick">Quick</button>
+      <button class="mode-tab" onclick="setMode('guided')" id="tab-guided">Guided</button>
+      <button class="mode-tab" onclick="setMode('advanced')" id="tab-advanced">Advanced</button>
+    </div>
+
+    <!-- QUICK MODE -->
+    <div id="mode-quick">
+      <div class="panel">
+        <div class="panel-title">Quick Rating</div>
+        <div class="rating-grid">
+          <div class="field">
+            <label>Overall</label>
+            <div class="star-group" id="stars-overall"></div>
+          </div>
+          <div class="field">
+            <label>Taste</label>
+            <div class="star-group" id="stars-taste"></div>
+          </div>
+          <div class="field">
+            <label>Aroma</label>
+            <div class="star-group" id="stars-smell"></div>
+          </div>
+          <div class="field">
+            <label>Appearance</label>
+            <div class="star-group" id="stars-appearance"></div>
+          </div>
+        </div>
+        <div class="field mt-16">
+          <label>Notes</label>
+          <textarea id="quick-notes" placeholder="Anything worth remembering..."></textarea>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="quick-recommend" style="width:auto;accent-color:var(--accent)">
+            Would recommend
+          </label>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="quick-staffpick" style="width:auto;accent-color:var(--accent)">
+            Staff pick
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIDED MODE -->
+    <div id="mode-guided" class="hidden">
+      <div class="panel">
+        <div class="panel-title">Guided — Sensory Sliders</div>
+        <div id="guided-sliders"></div>
+        <div class="section-label">Ratings</div>
+        <div id="guided-ratings"></div>
+        <div class="field mt-16">
+          <label>Notes</label>
+          <textarea id="guided-notes" placeholder="Guided impressions..."></textarea>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="guided-recommend" style="width:auto;accent-color:var(--accent)">
+            Would recommend
+          </label>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="guided-staffpick" style="width:auto;accent-color:var(--accent)">
+            Staff pick
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADVANCED MODE -->
+    <div id="mode-advanced" class="hidden">
+      <div class="panel">
+        <div class="panel-title">Appearance</div>
+        <div id="advanced-appearance"></div>
+        <div class="field">
+          <label>Colour</label>
+          <div id="colour-track-wrap"></div>
+        </div>
+        <div class="field">
+          <label>Clarity / Notes</label>
+          <textarea id="adv-appearance-notes" placeholder="e.g. hazy, bright, deep ruby..." style="min-height:50px"></textarea>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Nose / Aroma</div>
+        <div id="advanced-nose"></div>
+        <div class="field mt-8">
+          <label>Open nose notes</label>
+          <textarea id="adv-nose-notes" placeholder="What do you get?" style="min-height:50px"></textarea>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Palate</div>
+        <div id="advanced-palate"></div>
+        <div class="field mt-8">
+          <label>Open palate notes</label>
+          <textarea id="adv-palate-notes" placeholder="Flavour, texture, balance..." style="min-height:50px"></textarea>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Finish</div>
+        <div id="advanced-finish"></div>
+        <div class="field mt-8">
+          <label>Finish notes</label>
+          <textarea id="adv-finish-notes" placeholder="Length, aftertaste..." style="min-height:50px"></textarea>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Overall</div>
+        <div class="field">
+          <label>Overall Impression</label>
+          <div class="star-group" id="stars-adv-overall"></div>
+        </div>
+        <div class="field mt-8">
+          <label>Conclusion / Assessment</label>
+          <textarea id="adv-conclusion" placeholder="Final thoughts, food pairings, who it's for..."></textarea>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="adv-recommend" style="width:auto;accent-color:var(--accent)">
+            Would recommend
+          </label>
+        </div>
+        <div class="field">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="adv-staffpick" style="width:auto;accent-color:var(--accent)">
+            Staff pick
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary btn-full" id="save-btn" onclick="saveTastingNote()">Save Note</button>
+    </div>
+    <div id="save-error" class="error-msg hidden mt-8"></div>
+  </div>
+
+  <!-- ── NOTES SCREEN ───────────────────────────────────── -->
+  <div id="screen-notes" class="screen">
+    <div class="header">
+      <h1>Notes</h1>
+      <span id="notes-count" class="text-dim text-sm"></span>
+    </div>
+    <div class="panel" style="padding:12px 16px">
+      <div style="display:flex;gap:8px">
+        <input type="text" id="notes-search" placeholder="Search notes..." oninput="filterNotes()" style="flex:1">
+        <select id="notes-filter-cat" onchange="filterNotes()" style="width:120px">
+          <option value="">All types</option>
+          <option value="beer">Beer</option>
+          <option value="wine">Wine</option>
+          <option value="whisky">Whisky</option>
+          <option value="gin">Gin</option>
+        </select>
+      </div>
+    </div>
+    <div id="notes-list"></div>
+  </div>
+
+
+  <!-- ── STYLE PICKER MODAL ────────────────────────────── -->
+  <div class="modal-overlay hidden" id="style-picker-modal">
+    <div class="modal-sheet">
+      <div class="modal-title">Select style</div>
+      <div class="modal-product-name" id="style-picker-product-name"></div>
+      <div id="style-picker-grid"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary btn-full" onclick="confirmStylePick()">Start Tasting</button>
+        <button class="btn btn-ghost btn-full" onclick="closeStylePicker()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<!-- NAV BAR -->
+<nav class="nav" id="main-nav" style="display:none">
+  <button class="nav-btn active" id="nav-add" onclick="navTo('main')">
+    <span class="nav-icon">＋</span>Add Note
+  </button>
+  <button class="nav-btn" id="nav-notes" onclick="navTo('notes')">
+    <span class="nav-icon">◎</span>All Notes
+  </button>
+  <button class="nav-btn" id="nav-logout" onclick="logout()">
+    <span class="nav-icon">↩</span>Out
+  </button>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// CONFIG & STATE
+// ═══════════════════════════════════════════════════════
+let CONFIG = { squareToken: '', squareLocation: '', sbUrl: '', sbKey: '' };
+let STATE = { staffId: null, staffName: '', currentProduct: null, currentMode: 'quick', allNotes: [] };
+let pinBuffer = '';
+let searchTimer = null;
+let squareResultsCache = [];
+const STYLE_PICKER_OPTIONS = {
+  beer: [
+    { label: 'Clean + Easy',    value: 'Clean + Easy',    desc: 'Light, refreshing, grab and go' },
+    { label: 'Clean + Classic', value: 'Clean + Classic',  desc: 'Pilsners and crisp lagers' },
+    { label: 'Bright + Hoppy',  value: 'Bright + Hoppy',   desc: 'Easy pales with fresh hop' },
+    { label: 'Bitter + Bold',   value: 'Bitter + Bold',    desc: 'West Coast, hop-driven bitterness' },
+    { label: 'Juicy + Bold',    value: 'Juicy + Bold',     desc: 'Hazy IPAs, big hop flavour' },
+    { label: 'Dark + Deep',     value: 'Dark + Deep',      desc: 'Porters, stouts, malt-driven' },
+    { label: 'Wild + Tart',     value: 'Wild + Tart',      desc: 'Sours, saisons, anything lively' },
+    { label: 'Old + New',       value: 'Old + New',        desc: 'European classics and modern takes' },
+  ],
+  wine: [
+    { label: 'Pair + Pour',     value: 'Pair + Pour',      desc: 'Food-focused, pours with interest' },
+    { label: 'Fun + Fizzy',     value: 'Fun + Fizzy',      desc: 'Light, refreshing, grab and go' },
+    { label: 'Light Dry White', value: 'Light Dry White',  desc: 'Riesling, Pinot Gris, Vermentino' },
+    { label: 'Full White',      value: 'Full White',       desc: 'Chardonnay, Marsanne' },
+    { label: 'Rosé',            value: 'Rosé',             desc: '' },
+    { label: 'Light Red',       value: 'Light Red',        desc: 'Pinot Noir, Gamay' },
+    { label: 'Medium Red',      value: 'Medium Red',       desc: 'Tempranillo, Grenache' },
+    { label: 'Bold Red',        value: 'Bold Red',         desc: 'Shiraz, Cab Sauv, Monastrell' },
+  ],
+  whisky: [
+    { label: 'Single Malt',     value: 'Single Malt',      desc: '' },
+    { label: 'Blended',         value: 'Blended',          desc: '' },
+    { label: 'Bourbon Style',   value: 'Bourbon Style',    desc: '' },
+    { label: 'Rye Style',       value: 'Rye Style',        desc: '' },
+    { label: 'Other Whisky',    value: 'Other',            desc: '' },
+  ],
+  gin: [
+    { label: 'London Dry',      value: 'London Dry',       desc: 'Juniper-forward, classic' },
+    { label: 'Contemporary',    value: 'Contemporary',     desc: 'Floral, citrus, experimental' },
+    { label: 'Navy Strength',   value: 'Navy Strength',    desc: '57%+ ABV' },
+    { label: 'Sloe / Fruit',    value: 'Sloe',             desc: 'Infused or fruit-forward' },
+    { label: 'Other',           value: 'Other',            desc: '' },
+  ],
+  cider: [
+    { label: 'Dry Cider',       value: 'Dry Cider',        desc: '' },
+    { label: 'Sweet Cider',     value: 'Sweet Cider',      desc: '' },
+    { label: 'Wild / Pet Nat',  value: 'Wild Cider',       desc: '' },
+  ],
+  noalc: [
+    { label: 'No Alc Beer',     value: 'No Alc Beer',      desc: '' },
+    { label: 'No Alc Wine',     value: 'No Alc Wine',      desc: '' },
+    { label: 'No Alc Spirit',   value: 'No Alc Spirit',    desc: '' },
+  ],
+  other: [
+    { label: 'Beer',            value: 'beer',             desc: '' },
+    { label: 'Wine',            value: 'wine',             desc: '' },
+    { label: 'Whisky',          value: 'whisky',           desc: '' },
+    { label: 'Gin',             value: 'gin',              desc: '' },
+    { label: 'Cider',           value: 'cider',            desc: '' },
+    { label: 'Other',           value: 'other',            desc: '' },
+  ],
+};
+
+
+
+// Load config from localStorage
+function loadConfig() {
+  const c = localStorage.getItem('tnconfig');
+  if (c) { CONFIG = JSON.parse(c); return true; }
+  return false;
+}
+
+function saveConfig() {
+  const token = document.getElementById('cfg-square-token').value.trim();
+  const loc   = document.getElementById('cfg-square-location').value.trim();
+  const sbUrl = document.getElementById('cfg-sb-url').value.trim();
+  const sbKey = document.getElementById('cfg-sb-key').value.trim();
+  const err   = document.getElementById('config-error');
+
+  if (!token || !loc || !sbUrl || !sbKey) {
+    err.textContent = 'All four fields are required.';
+    err.classList.remove('hidden'); return;
+  }
+  CONFIG = { squareToken: token, squareLocation: loc, sbUrl, sbKey };
+  localStorage.setItem('tnconfig', JSON.stringify(CONFIG));
+  err.classList.add('hidden');
+  showScreen('login');
+  loadStaff();
+}
+
+// ═══════════════════════════════════════════════════════
+// SUPABASE HELPERS
+// ═══════════════════════════════════════════════════════
+async function sbFetch(path, opts = {}) {
+  const url = CONFIG.sbUrl + '/rest/v1/' + path;
+  const res = await fetch(url, {
+    ...opts,
+    headers: {
+      'apikey': CONFIG.sbKey,
+      'Authorization': 'Bearer ' + CONFIG.sbKey,
+      'Content-Type': 'application/json',
+      'Prefer': opts.prefer || 'return=representation',
+      ...(opts.headers || {})
+    }
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(txt);
+  }
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
+}
+
+async function sbGet(table, params = '') {
+  return sbFetch(table + '?' + params, { method: 'GET' });
+}
+
+async function sbPost(table, body) {
+  return sbFetch(table, { method: 'POST', body: JSON.stringify(body) });
+}
+
+// ═══════════════════════════════════════════════════════
+// SQUARE HELPERS
+// ═══════════════════════════════════════════════════════
+async function squareSearch(query) {
+  const res = await fetch('https://whmmxbkgqxfqluskjguo.supabase.co/functions/v1/square-proxy', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': CONFIG.sbKey,
+      'Authorization': 'Bearer ' + CONFIG.sbKey,
+      'x-square-token': CONFIG.squareToken
+    },
+    body: JSON.stringify({ action: 'search', payload: { query } })
+  });
+  if (!res.ok) throw new Error('Square proxy error ' + res.status);
+  return res.json();
+}
+
+// ═══════════════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════════════
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const showNav = ['main','notes','tasting'].includes(name);
+  document.getElementById('main-nav').style.display = showNav ? 'flex' : 'none';
+  if (name === 'main') { document.getElementById('nav-add').classList.add('active'); document.getElementById('nav-notes').classList.remove('active'); }
+  if (name === 'notes') { document.getElementById('nav-notes').classList.add('active'); document.getElementById('nav-add').classList.remove('active'); loadNotes(); }
+}
+
+function navTo(screen) { showScreen(screen); }
+function goBack() { showScreen('main'); }
+
+// ═══════════════════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════════════════
+async function loadStaff() {
+  try {
+    const staff = await sbGet('staff', 'select=id,name,role&order=name');
+    const sel = document.getElementById('staff-select');
+    sel.innerHTML = '<option value="">Select name...</option>';
+    staff.forEach(s => {
+      const o = document.createElement('option');
+      o.value = s.id; o.textContent = s.name;
+      sel.appendChild(o);
+    });
+  } catch(e) {
+    showToast('Could not load staff — check Supabase config', true);
+  }
+}
+
+function buildNumpad() {
+  const pad = document.getElementById('numpad');
+  pad.innerHTML = '';
+  const keys = ['1','2','3','4','5','6','7','8','9','','0','⌫'];
+  keys.forEach(k => {
+    const btn = document.createElement('div');
+    btn.className = 'num-btn';
+    btn.textContent = k;
+    if (k === '') { btn.style.visibility = 'hidden'; }
+    else btn.onclick = () => handlePin(k);
+    pad.appendChild(btn);
+  });
+}
+
+function handlePin(key) {
+  const err = document.getElementById('login-error');
+  err.classList.add('hidden');
+  if (key === '⌫') { pinBuffer = pinBuffer.slice(0, -1); }
+  else if (pinBuffer.length < 4) { pinBuffer += key; }
+  updatePinDots();
+  if (pinBuffer.length === 4) verifyPin();
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    document.getElementById('dot-' + i).classList.toggle('filled', i < pinBuffer.length);
+  }
+}
+
+async function verifyPin() {
+  const staffId = document.getElementById('staff-select').value;
+  if (!staffId) { pinBuffer = ''; updatePinDots(); showLoginError('Select your name first.'); return; }
+  try {
+    const res = await sbGet('staff', `select=id,name,pin&id=eq.${staffId}`);
+    if (res.length && res[0].pin === pinBuffer) {
+      STATE.staffId = res[0].id;
+      STATE.staffName = res[0].name;
+      document.getElementById('logged-in-name').textContent = res[0].name;
+      pinBuffer = ''; updatePinDots();
+      showScreen('main');
+    } else {
+      pinBuffer = ''; updatePinDots();
+      showLoginError('Wrong PIN. Try again.');
+    }
+  } catch(e) { showLoginError('Error checking PIN.'); }
+}
+
+function showLoginError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg; el.classList.remove('hidden');
+}
+
+function logout() {
+  STATE.staffId = null; STATE.staffName = '';
+  pinBuffer = ''; updatePinDots();
+  document.getElementById('login-error').classList.add('hidden');
+  showScreen('login');
+}
+
+// ═══════════════════════════════════════════════════════
+// PRODUCT SEARCH
+// ═══════════════════════════════════════════════════════
+function searchProducts(query) {
+  clearTimeout(searchTimer);
+  const resultsEl = document.getElementById('search-results');
+  const loadingEl = document.getElementById('search-loading');
+  if (!query || query.length < 2) { resultsEl.innerHTML = ''; return; }
+  loadingEl.classList.remove('hidden');
+  searchTimer = setTimeout(async () => {
+    try {
+      const data = await squareSearch(query);
+      loadingEl.classList.add('hidden');
+      squareResultsCache = data.items || [];
+      const items = squareResultsCache;
+      if (!items.length) { resultsEl.innerHTML = '<div class="text-dim text-sm" style="padding:10px">No products found in Square</div>'; return; }
+      resultsEl.innerHTML = items.slice(0, 8).map((item, idx) => {
+        const v = item.item_data?.variations?.[0]?.item_variation_data;
+        const price = v?.price_money ? (v.price_money.amount / 100).toFixed(2) : '';
+        const cat = item.item_data?.category?.name || '';
+        return `<div class="result-item" onclick="selectSquareProduct(${idx})">
+          <div class="result-name">${item.item_data?.name || 'Unknown'}</div>
+          <div class="result-meta">${[cat, price ? '$'+price : ''].filter(Boolean).join(' · ')}</div>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      loadingEl.classList.add('hidden');
+      resultsEl.innerHTML = `<div class="error-msg">Square search failed. ${e.message}</div>`;
+    }
+  }, 400);
+}
+
+function selectSquareProduct(idx) {
+  const item = squareResultsCache[idx];
+  if (!item) { showToast('Product not found', true); return; }
+  const name = item.item_data?.name || 'Unknown';
+  const cat = guessCategory(item);
+  // Store partial product, show style picker
+  STATE.pendingProduct = { item, name, cat };
+  showStylePicker(name, cat);
+}
+
+function showStylePicker(name, cat) {
+  document.getElementById('style-picker-product-name').textContent = name;
+  const grid = document.getElementById('style-picker-grid');
+  const styles = STYLE_PICKER_OPTIONS[cat] || STYLE_PICKER_OPTIONS['other'];
+  grid.innerHTML = '<div class="style-grid">' + styles.map(s =>
+    `<div class="style-btn" onclick="selectStyle(this, '${s.value}')">
+      <strong>${s.label}</strong>${s.desc}
+    </div>`
+  ).join('') + '</div>';
+  document.getElementById('style-picker-modal').classList.remove('hidden');
+}
+
+function selectStyle(el, value) {
+  document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  el.dataset.selectedValue = value;
+}
+
+function confirmStylePick() {
+  const selected = document.querySelector('.style-btn.selected');
+  if (!selected) { showToast('Pick a style first', true); return; }
+  const { item, name, cat } = STATE.pendingProduct;
+  STATE.currentProduct = {
+    square_id: item.id,
+    name,
+    category: cat,
+    subcategory: selected.dataset.selectedValue,
+    in_stock: true
+  };
+  closeStylePicker();
+  startTasting();
+}
+
+function closeStylePicker() {
+  document.getElementById('style-picker-modal').classList.add('hidden');
+  STATE.pendingProduct = null;
+}
+
+// Square category ID map from your account
+const SQUARE_CAT_MAP = {
+  'NWS6KAENCRUMHVT6FN7BLRZU': 'beer',
+  'E344NEMGMOVCB3E5TDYMABEA': 'wine',
+  'EYTLDIKWLA75QBGK5XHSW3E3': 'spirits',
+  '7IAOLRWUXFPGDBMJPD6SLEOL': 'cider',
+  '3H46EEUNDXIK2TUM4VCARUTP': 'noalc',
+};
+
+// Spirits sub-type detection by name
+function guessSpiritsType(name) {
+  const n = name.toLowerCase();
+  if (n.includes('gin')) return 'gin';
+  if (n.includes('whisky') || n.includes('whiskey')) return 'whisky';
+  return 'spirits';
+}
+
+function guessCategory(item) {
+  // Use reporting_category ID first (most reliable)
+  const repCatId = item.item_data?.reporting_category?.id || '';
+  // Also check categories array
+  const catIds = (item.item_data?.categories || []).map(c => c.id);
+  const allIds = [repCatId, ...catIds].filter(Boolean);
+
+  for (const id of allIds) {
+    if (SQUARE_CAT_MAP[id]) {
+      const mapped = SQUARE_CAT_MAP[id];
+      if (mapped === 'spirits') return guessSpiritsType(item.item_data?.name || '');
+      return mapped;
+    }
+  }
+  // Fallback: name-based
+  const name = (item.item_data?.name || '').toLowerCase();
+  if (name.includes('gin')) return 'gin';
+  if (name.includes('whisky') || name.includes('whiskey')) return 'whisky';
+  return 'other';
+}
+
+function guessSubcategory(item, cat) {
+  if (cat !== 'beer') return '';
+  const name = (item.item_data?.name || '').toLowerCase();
+  if (name.includes('hazy') || name.includes('neipa') || name.includes('juicy')) return 'Juicy + Bold';
+  if (name.includes('ipa') || name.includes('west coast') || name.includes('pale')) return 'Bitter + Bold';
+  if (name.includes('sour') || name.includes('saison') || name.includes('gose') || name.includes('wild')) return 'Wild + Tart';
+  if (name.includes('stout') || name.includes('porter') || name.includes('dark')) return 'Dark + Deep';
+  if (name.includes('lager') || name.includes('pils')) return 'Clean + Classic';
+  return '';
+}
+
+// ═══════════════════════════════════════════════════════
+// NEW PRODUCT (manual)
+// ═══════════════════════════════════════════════════════
+const SUBCATS = {
+  beer: ['Clean + Easy','Clean + Classic','Bright + Hoppy','Bitter + Bold','Juicy + Bold','Dark + Deep','Wild + Tart','Old + New'],
+  wine: ['White — Light','White — Full','Rosé','Red — Light','Red — Medium','Red — Bold','Sparkling','Dessert'],
+  whisky: ['Single Malt','Blended','Bourbon Style','Rye Style','Other'],
+  gin: ['London Dry','Contemporary','Navy Strength','Sloe','Other'],
+  other: []
+};
+
+function updateSubcategoryOptions() {
+  const cat = document.getElementById('new-category').value;
+  const field = document.getElementById('subcategory-field');
+  const sel = document.getElementById('new-subcategory');
+  const subs = SUBCATS[cat] || [];
+  if (!subs.length) { field.style.display = 'none'; return; }
+  field.style.display = 'block';
+  sel.innerHTML = '<option value="">Select style...</option>' + subs.map(s => `<option value="${s}">${s}</option>`).join('');
+}
+
+function startNewProduct() {
+  const name = document.getElementById('new-product-name').value.trim();
+  const cat  = document.getElementById('new-category').value;
+  if (!name) { showToast('Enter a product name', true); return; }
+  if (!cat)  { showToast('Select a drink type', true); return; }
+  STATE.currentProduct = {
+    square_id: null,
+    name,
+    producer: document.getElementById('new-producer').value.trim(),
+    category: cat,
+    subcategory: document.getElementById('new-subcategory').value || '',
+    abv: parseFloat(document.getElementById('new-abv').value) || null,
+    in_stock: false
+  };
+  startTasting();
+}
+
+// ═══════════════════════════════════════════════════════
+// TASTING SCREEN SETUP
+// ═══════════════════════════════════════════════════════
+function startTasting() {
+  const p = STATE.currentProduct;
+  document.getElementById('tasting-product-badge').innerHTML = `
+    <div class="product-badge">
+      <div>
+        <div class="product-badge-name">${p.name}</div>
+        <div class="product-badge-meta">${[p.producer, p.subcategory || p.category].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div class="product-badge-cat">${p.category}</div>
+    </div>`;
+
+  buildStars('stars-overall');
+  buildStars('stars-taste');
+  buildStars('stars-smell');
+  buildStars('stars-appearance');
+  buildStars('stars-adv-overall');
+
+  setMode('quick');
+  showScreen('tasting');
+}
+
+function buildStars(containerId) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const s = document.createElement('span');
+    s.className = 'star'; s.textContent = '★'; s.dataset.val = i;
+    s.onclick = () => setStars(containerId, i);
+    el.appendChild(s);
+  }
+}
+
+function setStars(containerId, val) {
+  const el = document.getElementById(containerId);
+  el.dataset.value = val;
+  el.querySelectorAll('.star').forEach((s, i) => {
+    s.classList.toggle('active', i < val);
+  });
+}
+
+function getStars(containerId) {
+  return parseFloat(document.getElementById(containerId).dataset.value || 0);
+}
+
+// ═══════════════════════════════════════════════════════
+// MODE SWITCHING
+// ═══════════════════════════════════════════════════════
+function setMode(mode) {
+  STATE.currentMode = mode;
+  ['quick','guided','advanced'].forEach(m => {
+    document.getElementById('mode-' + m).classList.toggle('hidden', m !== mode);
+    document.getElementById('tab-' + m).classList.toggle('active', m === mode);
+  });
+  if (mode === 'guided') buildGuidedMode();
+  if (mode === 'advanced') buildAdvancedMode();
+}
+
+// ═══════════════════════════════════════════════════════
+// GUIDED MODE — drink-type reactive sliders
+// ═══════════════════════════════════════════════════════
+const GUIDED_PROFILES = {
+  beer: {
+    sliders: [
+      { id: 'bitterness', left: 'Smooth', right: 'Bitter' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'carbonation', left: 'Flat', right: 'Highly Carbonated' },
+      { id: 'sweetness', left: 'Dry', right: 'Sweet' },
+      { id: 'roast', left: 'Pale', right: 'Roasty' },
+      { id: 'hops', left: 'Malt-forward', right: 'Hop-forward' }
+    ],
+    ratings: ['Aroma','Appearance','Flavour','Mouthfeel','Overall']
+  },
+  'beer:Wild + Tart': {
+    sliders: [
+      { id: 'acidity', left: 'Low Acid', right: 'Highly Tart' },
+      { id: 'funk', left: 'Clean', right: 'Funky / Wild' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'carbonation', left: 'Flat', right: 'Highly Carbonated' },
+      { id: 'fruit', left: 'No Fruit', right: 'Fruity' },
+      { id: 'sweetness', left: 'Dry', right: 'Residual Sweet' }
+    ],
+    ratings: ['Sourness Balance','Funk Level','Fruit Character','Carbonation','Overall']
+  },
+  'beer:Juicy + Bold': {
+    sliders: [
+      { id: 'juicy', left: 'Crisp', right: 'Juicy' },
+      { id: 'bitterness', left: 'Low IBU', right: 'Bitter' },
+      { id: 'haze', left: 'Clear', right: 'Hazy' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'tropical', left: 'Subtle', right: 'Tropical Bomb' },
+      { id: 'carbonation', left: 'Soft', right: 'Crisp Carb' }
+    ],
+    ratings: ['Hop Aroma','Juiciness','Bitterness Balance','Body','Overall']
+  },
+  'beer:Bitter + Bold': {
+    sliders: [
+      { id: 'bitterness', left: 'Mild', right: 'Very Bitter' },
+      { id: 'malt', left: 'Hop-driven', right: 'Malt Backbone' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'carbonation', left: 'Soft', right: 'Crisp' },
+      { id: 'dry', left: 'Sweet Finish', right: 'Dry Finish' },
+      { id: 'resin', left: 'Floral', right: 'Resinous / Piney' }
+    ],
+    ratings: ['Bitterness Quality','Hop Clarity','Malt Balance','Dry Finish','Overall']
+  },
+  'beer:Dark + Deep': {
+    sliders: [
+      { id: 'roast', left: 'Mild Roast', right: 'Intense Roast' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'sweetness', left: 'Dry', right: 'Sweet' },
+      { id: 'coffee', left: 'No Coffee', right: 'Coffee-forward' },
+      { id: 'chocolate', left: 'No Chocolate', right: 'Chocolatey' },
+      { id: 'carbonation', left: 'Still', right: 'Carbonated' }
+    ],
+    ratings: ['Roast Character','Body & Texture','Aroma Complexity','Sweetness Balance','Overall']
+  },
+  wine: {
+    sliders: [
+      { id: 'sweetness', left: 'Bone Dry', right: 'Sweet' },
+      { id: 'acidity', left: 'Low Acid', right: 'High Acid' },
+      { id: 'tannin', left: 'Soft Tannin', right: 'Grippy Tannin' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'alcohol', left: 'Low Alcohol', right: 'High Alcohol' },
+      { id: 'oak', left: 'Unoaked', right: 'Heavily Oaked' }
+    ],
+    ratings: ['Nose Complexity','Palate Balance','Finish Length','Typicity','Overall']
+  },
+  whisky: {
+    sliders: [
+      { id: 'peat', left: 'Unpeated', right: 'Heavily Peated' },
+      { id: 'sweetness', left: 'Dry', right: 'Sweet' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'oak', left: 'Light Oak', right: 'Heavy Oak' },
+      { id: 'fruit', left: 'Grain-forward', right: 'Fruity' },
+      { id: 'heat', left: 'Smooth', right: 'Hot / Spirit-forward' }
+    ],
+    ratings: ['Nose Complexity','Palate Development','Finish Length','Balance','Overall']
+  },
+  gin: {
+    sliders: [
+      { id: 'juniper', left: 'Subtle Juniper', right: 'Juniper-forward' },
+      { id: 'citrus', left: 'No Citrus', right: 'Citrus-driven' },
+      { id: 'floral', left: 'Herbaceous', right: 'Floral' },
+      { id: 'body', left: 'Light', right: 'Full Body' },
+      { id: 'sweetness', left: 'Dry', right: 'Sweet' },
+      { id: 'spice', left: 'Soft', right: 'Spicy / Peppery' }
+    ],
+    ratings: ['Juniper Balance','Botanical Complexity','Nose','Palate','Overall']
+  }
+};
+
+function getProfile(key) {
+  const p = STATE.currentProduct;
+  const subKey = p.category + ':' + p.subcategory;
+  return GUIDED_PROFILES[subKey] || GUIDED_PROFILES[p.category] || GUIDED_PROFILES.beer;
+}
+
+function buildGuidedMode() {
+  const profile = getProfile();
+  const slidersEl = document.getElementById('guided-sliders');
+  const ratingsEl = document.getElementById('guided-ratings');
+
+  slidersEl.innerHTML = profile.sliders.map(s => `
+    <div class="slider-item">
+      <div class="slider-labels"><span>${s.left}</span><span>${s.right}</span></div>
+      <input type="range" id="slider-${s.id}" min="0" max="100" value="50"
+        oninput="document.getElementById('sv-${s.id}').textContent = this.value">
+      <div class="slider-value" id="sv-${s.id}">50</div>
+    </div>`).join('');
+
+  ratingsEl.innerHTML = '<div class="rating-grid">' + profile.ratings.map(r => {
+    const rid = 'gr-' + r.toLowerCase().replace(/\s+/g,'-');
+    return `<div class="field"><label>${r}</label><div class="star-group" id="${rid}"></div></div>`;
+  }).join('') + '</div>';
+
+  profile.ratings.forEach(r => {
+    buildStars('gr-' + r.toLowerCase().replace(/\s+/g,'-'));
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// ADVANCED MODE — drink-type reactive flavour notes
+// ═══════════════════════════════════════════════════════
+const ADVANCED_PROFILES = {
+  beer: {
+    colours: { track: 'linear-gradient(to right, #fff7e0, #f5c842, #c17b1a, #6b3a1f, #1a0a00)', stops: ['Pale Straw','Gold','Amber','Brown','Black'] },
+    appearance: ['Hazy','Hazy with yeast','Clear','Bright','Flat white head','Dense white head','Tan head','No head'],
+    nose: {
+      'Hop': ['Citrus','Tropical','Pine','Resin','Floral','Grassy','Herbal','Spice'],
+      'Malt': ['Biscuit','Bread','Toffee','Caramel','Roast','Chocolate','Coffee','Smoke'],
+      'Fermentation': ['Fruity esters','Clean','Sulphur','Yeast','Barnyard','Brett','Lactic','Acetic'],
+      'Other': ['Stone fruit','Berry','Vanilla','Oak','Honey','Mineral']
+    },
+    palate: {
+      'Flavour': ['Citrus hop','Tropical hop','Pine/Resin','Biscuit malt','Caramel','Roast','Chocolate','Coffee','Smoke','Fruity','Clean','Tart'],
+      'Structure': ['Low carbonation','Medium carbonation','High carbonation','Light body','Medium body','Full body','Soft','Creamy','Astringent','Dry finish','Sweet finish']
+    },
+    finish: ['Short','Medium','Long','Bitter','Roasty','Sweet','Dry','Clean','Warming']
+  },
+  wine: {
+    colours: { track: 'linear-gradient(to right, #f5f0d8, #e8d870, #c8a830, #e8c0b0, #e07060, #8b2020, #3a0a18)', stops: ['White','Gold','Amber','Rosé','Red','Deep Red','Dark'] },
+    appearance: ['Watery rim','Pale straw','Straw','Gold','Deep gold','Amber','Salmon','Pink','Light ruby','Ruby','Garnet','Deep garnet','Tawny','Purple','Inky'],
+    nose: {
+      'Primary Fruit': ['Citrus','Apple','Pear','Peach','Apricot','Tropical','Red berry','Blackcurrant','Plum','Cherry','Fig'],
+      'Secondary': ['Brioche','Toast','Cream','Butter','Cheese rind','Yoghurt'],
+      'Tertiary': ['Vanilla','Coconut','Cedar','Sandalwood','Tobacco','Leather','Petrol','Honey','Dried fruit','Nuts','Mushroom','Earth']
+    },
+    palate: {
+      'Flavour': ['Citrus','Apple','Stone fruit','Tropical','Red berry','Dark fruit','Dried fruit','Savoury','Earthy'],
+      'Structure': ['Bone dry','Dry','Off-dry','Medium sweet','Sweet','Low acid','Med acid','High acid','Grippy tannin','Soft tannin','No tannin','Light body','Medium body','Full body']
+    },
+    finish: ['Short (<5s)','Medium (5-10s)','Long (>10s)','Fruity','Tannic','Acidic','Bitter','Savoury','Oaky','Warming','Clean']
+  },
+  whisky: {
+    colours: { track: 'linear-gradient(to right, #f5e8b0, #d4a020, #a06010, #6b3010, #2a1008)', stops: ['New Make','Gold','Honey','Amber','Dark'] },
+    appearance: ['Water white','Very pale','Pale gold','Gold','Deep gold','Amber','Deep amber','Dark mahogany'],
+    nose: {
+      'Fruit': ['Orchard fruit','Citrus','Tropical','Dried fruit','Berry','Maraschino cherry'],
+      'Grain & Malt': ['Cereal','Malt','Biscuit','Bread','Porridge'],
+      'Wood & Distillery': ['Vanilla','Oak','Coconut','Caramel','Toffee','Cloves','Cinnamon'],
+      'Peat & Smoke': ['Medicinal','Iodine','Bonfire','Ash','Tar','Earthy peat','Grassy smoke'],
+      'Wine Influence': ['Sherry','Port','Wine','Dried fruit','Christmas cake']
+    },
+    palate: {
+      'Flavour': ['Vanilla','Honey','Caramel','Toffee','Fruit','Malt','Spice','Peat','Smoke','Oak','Dried fruit','Savoury'],
+      'Texture': ['Watery','Light','Medium body','Full body','Oily','Creamy','Dry','Sweet','Warming','Burning']
+    },
+    finish: ['Very short','Short','Medium','Long','Very long','Dry','Sweet','Spicy','Peaty','Fruity','Oaky','Warming']
+  },
+  gin: {
+    colours: { track: 'linear-gradient(to right, #f8f8f0, #e8f0d8, #d0e8b0)', stops: ['Clear','Pale','Straw'] },
+    appearance: ['Crystal clear','Clear','Slight haze','Pale yellow','Straw'],
+    nose: {
+      'Botanical': ['Juniper','Coriander seed','Angelica root','Orris root','Liquorice','Cassia'],
+      'Citrus': ['Lemon','Lime','Orange','Grapefruit','Bergamot'],
+      'Floral': ['Rose','Lavender','Violet','Elderflower','Jasmine'],
+      'Herbal & Spice': ['Rosemary','Basil','Pepper','Cardamom','Ginger','Thyme','Sage'],
+      'Other': ['Pine','Cucumber','Melon','Earthy','Honey','Mineral']
+    },
+    palate: {
+      'Flavour': ['Juniper-led','Citrus-led','Floral-led','Spice-led','Herbal','Balanced botanical','Pine','Earthy'],
+      'Texture': ['Light body','Medium body','Full body','Dry','Off-dry','Warming','Spirit-forward','Smooth']
+    },
+    finish: ['Short','Medium','Long','Juniper','Citrus','Spice','Floral','Dry','Sweet','Warming']
+  }
+};
+
+function buildAdvancedMode() {
+  const profile = ADVANCED_PROFILES[STATE.currentProduct.category] || ADVANCED_PROFILES.beer;
+
+  // Appearance tags
+  const appEl = document.getElementById('advanced-appearance');
+  appEl.innerHTML = '<div class="tag-grid">' + profile.appearance.map(a =>
+    `<div class="tag" onclick="this.classList.toggle('selected')">${a}</div>`
+  ).join('') + '</div>';
+
+  // Colour track
+  const colWrap = document.getElementById('colour-track-wrap');
+  colWrap.innerHTML = `
+    <div class="colour-track" id="colour-track" style="background:${profile.colours.track}" onclick="setColour(event)">
+      <div class="colour-indicator" id="colour-indicator" style="left:50%"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-dim);margin-top:4px">
+      ${profile.colours.stops.map(s => `<span>${s}</span>`).join('')}
+    </div>
+    <div id="colour-value" style="text-align:center;font-size:11px;color:var(--accent);margin-top:4px">50%</div>`;
+
+  // Nose
+  const noseEl = document.getElementById('advanced-nose');
+  noseEl.innerHTML = Object.entries(profile.nose).map(([group, tags]) => `
+    <div class="wheel-section">
+      <div class="wheel-section-title">${group}</div>
+      <div class="tag-grid">${tags.map(t => `<div class="tag" onclick="this.classList.toggle('selected')">${t}</div>`).join('')}</div>
+    </div>`).join('');
+
+  // Palate
+  const palEl = document.getElementById('advanced-palate');
+  palEl.innerHTML = Object.entries(profile.palate).map(([group, tags]) => `
+    <div class="wheel-section">
+      <div class="wheel-section-title">${group}</div>
+      <div class="tag-grid">${tags.map(t => `<div class="tag" onclick="this.classList.toggle('selected')">${t}</div>`).join('')}</div>
+    </div>`).join('');
+
+  // Finish
+  const finEl = document.getElementById('advanced-finish');
+  finEl.innerHTML = '<div class="tag-grid">' + profile.finish.map(t =>
+    `<div class="tag" onclick="this.classList.toggle('selected')">${t}</div>`
+  ).join('') + '</div>';
+}
+
+function setColour(e) {
+  const track = document.getElementById('colour-track');
+  const rect = track.getBoundingClientRect();
+  const pct = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
+  document.getElementById('colour-indicator').style.left = pct + '%';
+  document.getElementById('colour-value').textContent = Math.round(pct) + '%';
+}
+
+// ═══════════════════════════════════════════════════════
+// SAVE TASTING NOTE
+// ═══════════════════════════════════════════════════════
+async function saveTastingNote() {
+  const btn = document.getElementById('save-btn');
+  const errEl = document.getElementById('save-error');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  errEl.classList.add('hidden');
+
+  try {
+    // Ensure product exists in DB
+    let productId;
+    const p = STATE.currentProduct;
+
+    if (p.square_id) {
+      // Try to find existing
+      const existing = await sbGet('products', `square_id=eq.${p.square_id}`);
+      if (existing.length) {
+        productId = existing[0].id;
+      } else {
+        const created = await sbPost('products', { square_id: p.square_id, name: p.name, category: p.category, subcategory: p.subcategory, in_stock: true });
+        productId = created[0].id;
+      }
+    } else {
+      const created = await sbPost('products', { name: p.name, producer: p.producer, category: p.category, subcategory: p.subcategory, abv: p.abv, in_stock: false });
+      productId = created[0].id;
+    }
+
+    const mode = STATE.currentMode;
+    const note = {
+      product_id: productId,
+      staff_id: STATE.staffId,
+      mode,
+      category: p.category,
+      subcategory: p.subcategory || null
+    };
+
+    if (mode === 'quick') {
+      note.rating_overall    = getStars('stars-overall') || null;
+      note.rating_taste      = getStars('stars-taste') || null;
+      note.rating_smell      = getStars('stars-smell') || null;
+      note.rating_appearance = getStars('stars-appearance') || null;
+      note.open_notes        = document.getElementById('quick-notes').value || null;
+      note.would_recommend   = document.getElementById('quick-recommend').checked;
+      note.staff_pick        = document.getElementById('quick-staffpick').checked;
+    }
+
+    if (mode === 'guided') {
+      const profile = getProfile();
+      const sliders = {};
+      profile.sliders.forEach(s => { sliders[s.id] = parseInt(document.getElementById('slider-' + s.id).value); });
+      const ratings = {};
+      profile.ratings.forEach(r => { const rid = 'gr-' + r.toLowerCase().replace(/\s+/g,'-'); ratings[r] = getStars(rid); });
+      note.sliders = sliders;
+      note.guided_ratings = ratings;
+      note.rating_overall = ratings['Overall'] || null;
+      note.open_notes = document.getElementById('guided-notes').value || null;
+      note.would_recommend = document.getElementById('guided-recommend').checked;
+      note.staff_pick = document.getElementById('guided-staffpick').checked;
+    }
+
+    if (mode === 'advanced') {
+      note.appearance_notes = { tags: getSelectedTags('advanced-appearance'), notes: document.getElementById('adv-appearance-notes').value };
+      note.nose_notes = { tags: getSelectedTags('advanced-nose'), notes: document.getElementById('adv-nose-notes').value };
+      note.palate_notes = { tags: getSelectedTags('advanced-palate'), notes: document.getElementById('adv-palate-notes').value };
+      note.finish_notes = { tags: getSelectedTags('advanced-finish'), notes: document.getElementById('adv-finish-notes').value };
+      note.colour_value = document.getElementById('colour-value')?.textContent || null;
+      note.rating_overall = getStars('stars-adv-overall') || null;
+      note.open_notes = document.getElementById('adv-conclusion').value || null;
+      note.would_recommend = document.getElementById('adv-recommend').checked;
+      note.staff_pick = document.getElementById('adv-staffpick').checked;
+    }
+
+    await sbPost('tasting_notes', note);
+    showToast('Note saved ✓');
+    resetTastingForm();
+    showScreen('main');
+  } catch(e) {
+    errEl.textContent = 'Save failed: ' + e.message;
+    errEl.classList.remove('hidden');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save Note';
+  }
+}
+
+function getSelectedTags(containerId) {
+  const el = document.getElementById(containerId);
+  return [...el.querySelectorAll('.tag.selected')].map(t => t.textContent);
+}
+
+function resetTastingForm() {
+  ['overall','taste','smell','appearance'].forEach(k => buildStars('stars-' + k));
+  buildStars('stars-adv-overall');
+  document.getElementById('quick-notes').value = '';
+  document.getElementById('quick-recommend').checked = false;
+  document.getElementById('quick-staffpick').checked = false;
+  STATE.currentProduct = null;
+  document.getElementById('product-search').value = '';
+  document.getElementById('search-results').innerHTML = '';
+  document.getElementById('new-product-name').value = '';
+  document.getElementById('new-producer').value = '';
+  document.getElementById('new-abv').value = '';
+  document.getElementById('new-category').value = '';
+  document.getElementById('subcategory-field').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════
+// NOTES LIST
+// ═══════════════════════════════════════════════════════
+async function loadNotes() {
+  const listEl = document.getElementById('notes-list');
+  listEl.innerHTML = '<div class="loading"><span class="spinner"></span>Loading notes...</div>';
+  try {
+    const notes = await sbGet('tasting_notes',
+      'select=*,products(name,producer,category,subcategory),staff(name)&order=created_at.desc&limit=100'
+    );
+    STATE.allNotes = notes;
+    document.getElementById('notes-count').textContent = notes.length + ' notes';
+    renderNotes(notes);
+  } catch(e) {
+    listEl.innerHTML = `<div class="error-msg" style="padding:20px">Failed to load: ${e.message}</div>`;
+  }
+}
+
+function filterNotes() {
+  const q = document.getElementById('notes-search').value.toLowerCase();
+  const cat = document.getElementById('notes-filter-cat').value;
+  const filtered = STATE.allNotes.filter(n => {
+    const name = (n.products?.name || '').toLowerCase();
+    const matchQ = !q || name.includes(q);
+    const matchCat = !cat || n.category === cat;
+    return matchQ && matchCat;
+  });
+  renderNotes(filtered);
+}
+
+function renderNotes(notes) {
+  const listEl = document.getElementById('notes-list');
+  if (!notes.length) {
+    listEl.innerHTML = '<div class="empty"><div class="empty-icon">○</div><div>No tasting notes yet</div></div>';
+    return;
+  }
+  listEl.innerHTML = notes.map(n => {
+    const p = n.products || {};
+    const score = n.rating_overall;
+    const tags = [];
+    if (n.mode) tags.push(n.mode);
+    if (n.staff_pick) tags.push('staff pick');
+    if (n.would_recommend) tags.push('recommend');
+    const subcat = n.subcategory || p.subcategory || '';
+    const meta = [n.staff?.name, subcat || n.category, formatDate(n.created_at)].filter(Boolean).join(' · ');
+    const noteSummary = n.open_notes ? `<div class="note-card-body">${n.open_notes.substring(0,120)}${n.open_notes.length > 120 ? '…' : ''}</div>` : '';
+    const tagsHtml = tags.length ? `<div class="note-tags-row">${tags.map(t => `<span class="note-tag-sm">${t}</span>`).join('')}</div>` : '';
+    return `<div class="note-card">
+      <div class="note-card-header">
+        <div>
+          <div class="note-card-title">${p.name || 'Unknown product'}</div>
+          <div class="note-card-meta">${meta}</div>
+        </div>
+        ${score ? `<div class="note-card-score">${score}</div>` : ''}
+      </div>
+      ${noteSummary}
+      ${tagsHtml}
+    </div>`;
+  }).join('');
+}
+
+function formatDate(dt) {
+  if (!dt) return '';
+  return new Date(dt).toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+}
+
+// ═══════════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════════
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = isError ? 'var(--danger)' : 'var(--accent)';
+  t.style.color = isError ? '#fff' : '#0e0e0d';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+function init() {
+  buildNumpad();
+  if (loadConfig()) {
+    showScreen('login');
+    loadStaff();
+  } else {
+    showScreen('config');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
